@@ -1,0 +1,33 @@
+{{block styles}}
+<link rel="stylesheet" type="text/css" href="{{ static 'global/global_styles.css' }}"/>
+{{endblock}}
+
+{{ block title }}
+<div class="narrow-body">
+    Post-Task Survey
+</div>
+{{ endblock }}
+
+{% block content %}
+
+    <p>
+        <b>Please answer the following questions.</b>
+    </p>
+
+
+    {{for question in form}}
+        <div class="form-group">
+                {{question.label}}
+            <div class="radio-select-option">
+                {{ question }}
+                {% if question.errors %}
+                    {% for error in question.errors %}
+                        <div class="error-message">{{ error }}</div>
+                    {% endfor %}
+                {% endif %}
+            </div>
+        </div>
+    {{endfor}}
+    <div class="next-button">{{ next_button }}</div>
+
+{% endblock %}

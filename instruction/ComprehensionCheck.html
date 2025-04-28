@@ -1,0 +1,65 @@
+{% load static %}
+
+{{ block style }}
+<link rel="stylesheet" type="text/css" href="{% static 'global/global_styles.css' %}">
+{{ endblock }}
+
+{{ block title }}
+<div class="narrow-body">Check Your Understanding</div>
+{{ endblock }}
+
+{{ block content }}
+<div class="narrow-body">
+
+<!-- Shared Q1–Q4 -->
+<div class="form-group">
+    1. The color of the ball in Box A is randomly selected each round and is the same for everyone in your group.
+    <div class="radio-select-option">
+        {{ form.q1 }}
+        {% if form.q1.errors %}
+            {% for error in form.q1.errors %}
+                <div class="error-message">{{ error }}</div>
+            {% endfor %}
+        {% endif %}
+    </div>
+</div>
+
+<div class="form-group">
+    2. What determines the size of the ball in Box B?
+    <div class="radio-select-option">
+        {{ form.q2 }}
+        {% if form.q2.errors %}
+            {% for error in form.q2.errors %}
+                <div class="error-message">{{ error }}</div>
+            {% endfor %}
+        {% endif %}
+    </div>
+</div>
+
+<div class="form-group">
+    3. You and 2 other people choose Box B. What is your earning?
+    <div class="radio-select-option">
+        {{ form.q3 }}
+        {% if form.q3.errors %}
+            {% for error in form.q3.errors %}
+                <div class="error-message">{{ error }}</div>
+            {% endfor %}
+        {% endif %}
+    </div>
+</div>
+
+<div class="form-group">
+    4. Imagine you knew the color of the ball in Box A before choosing. Which of the following situations would give you the highest earning?
+    <div class="radio-select-option">
+        {{ form.q4 }}
+        {% if form.q4.errors %}
+            {% for error in form.q4.errors %}
+                <div class="error-message">{{ error }}</div>
+            {% endfor %}
+        {% endif %}
+    </div>
+</div>
+
+<div class="next-button">{{ next_button }}</div>
+</div>
+{{ endblock }}

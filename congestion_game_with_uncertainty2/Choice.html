@@ -1,0 +1,99 @@
+{% load static %}
+
+{{ block style }}
+<link rel="stylesheet" href="{% static 'global/global_styles.css' %}">
+<style>
+.choice-container {
+    display: flex;
+    justify-content: center;
+    gap: 100px;
+    margin-bottom: 30px;
+}
+
+.choice-box {
+    width: 320px; /* wider box because image is bigger */
+    min-height: 600px; /* increase total box height */
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.choice-box img.main-img {
+    width: 250px; /* 🎯 Bigger image */
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.choice-description {
+    min-height: 100px; /* 🎯 Force same text block height */
+    margin-top: 10px;
+    margin-bottom: 10px;
+    font-size: 17px;
+}
+
+.choice-radio {
+    margin-top: 20px; /* 🎯 More breathing room between text and radio */
+    font-size: 17px;
+}
+
+.next-button {
+    margin-top: 30px;
+    text-align: center;
+}
+</style>
+{{ endblock }}
+
+{{ block content }}
+<div class="narrow-body">
+    <h2>Your Decision</h2>
+
+    <p>Please choose between:</p>
+
+    <div class="choice-container">
+        <div class="choice-box">
+            <h3>Box A</h3>
+            <img src="{% static 'congestion_game_with_uncertainty/images/box_a_image.png' %}" alt="Box A" class="main-img">
+
+            <p class="choice-description">
+                Contains a ball with an <b>unknown color</b> — either
+                <span class="yellow-bold">YELLOW</span> or
+                <span class="blue-bold">BLUE</span>.
+                <br>
+                The chance is <b>50%</b> for each color.
+            </p>
+
+            <div class="choice-radio">
+                <label>
+                    <input type="radio" name="choice" value="A" required> Choose Box A
+                </label>
+            </div>
+        </div>
+
+        <div class="choice-box">
+            <h3>Box B</h3>
+            <img src="{% static 'congestion_game_with_uncertainty/images/box_b_image.png' %}" alt="Box B" class="main-img">
+
+            <p class="choice-description">
+                The ball has an <b>unknown size</b>, which may be <b>small</b> or <b>large</b>,
+                depending on how many people choose Box B.
+            </p>
+
+            <div class="choice-radio">
+                <label>
+                    <input type="radio" name="choice" value="B" required> Choose Box B
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <div class="next-button">
+        {{ next_button }}
+    </div>
+</div>
+{{ endblock }}
+
+{{ block script }}
+<!-- No extra scripts needed -->
+{{ endblock }}

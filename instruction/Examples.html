@@ -1,0 +1,78 @@
+{{ block style }}
+   <link rel="stylesheet" type="text/css" href="{{ static 'global/global_styles.css' }}"/>
+    <style>
+        ul li{
+            line-height:1.2;
+        }
+    </style>
+{{ endblock }}
+
+{{ block title }}
+    <div class="narrow-body">
+        Example Decisions
+    </div>
+{{ endblock }}
+
+{{ block content }}
+<div class="narrow-body">
+
+<p>
+  The examples below show how your choice of Box A or Box B, along with either the ball color (for Box A) or the number of people choosing Box B, affects your earnings.
+    <b>Reminder</b>: The color of the Ball in Box A is the same for everyone in your group.
+    {{if treatment == 'BI'}}However, each participant receives their own <b>Clue Ball</b>, drawn <b>separately</b> from a hidden <b>Clue Box</b> based on the Ball in Box A color.
+You will only see your own Clue Ball — you will not be told the Ball in Box A color or which Clue Box was used.
+{{endif}}
+</p>
+
+
+<!--    <ul>-->
+<!--        <li><span class="example-a">Example A:</span> If someone chooses -4 tokens for their Decision, this changes their Individual Account-->
+<!--            value by +4 ECUs, and changes the Group Account value by -12 ECUs.</li>-->
+<!--        <li><span class="example-b">Example B:</span> If someone chooses 0 for their Decision, the Individual and Group Account-->
+<!--            are not changed.</li>-->
+<!--        <li><span class="example-c">Example C:</span> If someone chooses +6 tokens for their Decision, this changes their Individual Account-->
+<!--        value by -6 ECUs, and changes the Group Account value by +18 ECUs.</li>-->
+<!--    </ul>-->
+
+    <table class="example-table">
+    <tr>
+        <th class="example-table-header">Example</th>
+        <th class="example-table-header">Your Choice</th>
+        <th class="example-table-header">Ball Color / Group Behavior</th>
+        <th class="example-table-header">Your Earnings</th>
+    </tr>
+    <tr>
+        <td class="row-white">1</td>
+        <td class="row-white">Box A</td>
+        <td class="row-white"><span class="yellow-bold">YELLOW</span></td>
+        <td class="row-white">3 ECU</td>
+    </tr>
+    <tr>
+        <td class="row-white">2</td>
+        <td class="row-white">Box A</td>
+        <td class="row-white"><span class="blue-bold">BLUE</span></td>
+        <td class="row-white">1 ECU</td>
+    </tr>
+    <tr>
+        <td class="row-white">3</td>
+        <td class="row-white">Box B</td>
+        <td class="row-white">You were the only one</td>
+        <td class="row-white">2.5 ECU</td>
+    </tr>
+    <tr>
+        <td class="row-white">4</td>
+        <td class="row-white">Box B</td>
+        <td class="row-white">2 others chose Box B (3 total)</td>
+        <td class="row-white">1.5 ECU</td>
+    </tr>
+</table>
+    <br>
+    <p>
+        We will now check your understanding and allow you to you practice your
+        decision. Once you are sure that you understand these instructions,
+        <b>click "next" to signal you are ready </b> to move on.
+    </p>
+
+    <div class="next-button">{{ next_button }}</div>
+</div>
+{{ endblock }}

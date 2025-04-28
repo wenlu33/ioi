@@ -1,0 +1,82 @@
+{% load static %}
+
+{{ block style }}
+<link rel="stylesheet" type="text/css" href="{% static 'global/global_styles.css' %}">
+{{ endblock }}
+
+{{ block title }}
+<div class="narrow-body">Check Your Understanding (Instruction 2)</div>
+{{ endblock }}
+
+{{ block content }}
+<div class="narrow-body">
+
+<!-- Only for BI treatment, Q1-Q4 -->
+{% if treatment == 'BI' %}
+<div class="form-group">
+    1. If your Clue Ball is blue, what must be true?
+    <div class="radio-select-option">
+        {{ form.q5_bi }}
+        {% if form.q5_bi.errors %}
+            {% for error in form.q5_bi.errors %}
+                <div class="error-message">{{ error }}</div>
+            {% endfor %}
+        {% endif %}
+    </div>
+</div>
+
+<div class="form-group">
+    2. How does the computer decide which Clue Box (X or Y) to use?
+    <div class="radio-select-option">
+        {{ form.q6_bi }}
+        {% if form.q6_bi.errors %}
+            {% for error in form.q6_bi.errors %}
+                <div class="error-message">{{ error }}</div>
+            {% endfor %}
+        {% endif %}
+    </div>
+</div>
+
+<div class="form-group">
+    3. True or False: Other participants in your group may receive a different Clue Ball than you.
+    <div class="radio-select-option">
+        {{ form.q7_bi }}
+        {% if form.q7_bi.errors %}
+            {% for error in form.q7_bi.errors %}
+                <div class="error-message">{{ error }}</div>
+            {% endfor %}
+        {% endif %}
+    </div>
+</div>
+{% endif %}
+
+<!-- Only for BT Treatment -->
+{% if treatment == 'BT' %}
+<div class="form-group">
+    4. In Part 2, you and 2 other people choose Box B. What is your earning?
+    <div class="radio-select-option">
+        {{ form.q5_bt }}
+        {% if form.q5_bt.errors %}
+            {% for error in form.q5_bt.errors %}
+                <div class="error-message">{{ error }}</div>
+            {% endfor %}
+        {% endif %}
+    </div>
+</div>
+
+<div class="form-group">
+    5. How does Box B change in Part 2 compared to Part 1?
+    <div class="radio-select-option">
+        {{ form.q6_bt }}
+        {% if form.q6_bt.errors %}
+            {% for error in form.q6_bt.errors %}
+                <div class="error-message">{{ error }}</div>
+            {% endfor %}
+        {% endif %}
+    </div>
+</div>
+{% endif %}
+
+<div class="next-button">{{ next_button }}</div>
+</div>
+{{ endblock }}

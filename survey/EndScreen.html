@@ -1,0 +1,26 @@
+{{block styles}}
+<link rel="stylesheet" type="text/css" href="{{ static 'global/global_styles.css' }}"/>
+{{endblock}}
+
+{{ block title }}
+<div class="narrow-body">
+    Experiment Complete
+</div>
+{{ endblock }}
+
+{{ block content }}
+<div class="narrow-body">
+
+    <p>Thank you for your participation.</p>
+
+    <div class="results-header">Your Earnings Summary:</div>
+    <p>
+        <b>Decision Task Earnings:</b> ${{payoff}}<br>
+        <b>Survey Participation Payment:</b> ${{participation_fee}}<br>
+    </p>
+    <div style="font-size:16pt;"><b>Your Total Earnings:</b> ${{total_earnings}} </div>
+
+</div>
+
+
+{{ endblock }}

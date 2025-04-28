@@ -1,0 +1,115 @@
+{% load static %}
+
+{{ block style }}
+<link rel="stylesheet" type="text/css" href="{% static 'global/global_styles.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'global/nouislider.css' %}">
+<style>
+.slider-container {
+    width: 55%; /* a little narrower for centering */
+    margin: 0 auto 40px auto; /* space under slider bigger */
+}
+#slider {
+    height: 10px;
+    margin-top: 20px;
+}
+
+/* Track base */
+.noUi-target {
+    background: #d3d3d3;
+    border-radius: 5px;
+    border: none;
+}
+
+/* Hide wrong connect color */
+.noUi-connect {
+    background: none;
+}
+
+/* Clean pip ticks */
+.noUi-pips {
+    margin-top: 5px;
+}
+.noUi-pips .noUi-marker {
+    height: 8px;
+}
+.noUi-pips .noUi-value {
+    font-size: 12px;
+    color: black;
+}
+
+/* 🎯 Final breathing space for the slider text */
+.slider-text {
+    margin-top: 40px; /* was 30px, now 40px */
+    margin-bottom: 10px;
+    font-size: 16px;
+}
+</style>
+{{ endblock }}
+
+{{ block content }}
+<div class="narrow-body">
+    <h2>Guess</h2>
+
+    <p class="slider-text">What is your guess that the ball in Box A is <span class="yellow-bold">YELLOW</span>? (0–100%)</p>
+
+    <div class="slider-container">
+        <div id="slider"></div>
+    </div>
+
+    <div class="slider-text">
+        <p>The percent chance that the ball is <span class="yellow-bold">YELLOW</span>: <span id="yellow-percent">50</span>%</p>
+        <p>The percent chance that the ball is <span class="blue-bold">BLUE</span>: <span id="blue-percent">50</span>%</p>
+    </div>
+
+    {{ formfield 'first_guess' }}
+
+    <div class="next-button">{{ next_button }}</div>
+</div>
+{{ endblock }}
+
+{{ block script }}
+<script src="{% static 'global/nouislider.min.js' %}"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    var slider = document.getElementById('slider');
+
+    noUiSlider.create(slider, {
+        start: 50,
+        connect: [true, false],
+        range: {
+            'min': 0,
+            'max': 100
+        },
+        step: 1,
+        pips: {
+            mode: 'positions',
+            values: [0, 50, 100],
+            density: 3
+        }
+    });
+
+    var yellowPercent = document.getElementById('yellow-percent');
+    var bluePercent = document.getElementById('blue-percent');
+    var inputField = document.getElementsByName('first_guess')[0];
+
+    function updateBackground(value) {
+        slider.style.background = `linear-gradient(to right, #F5B700 0%, #F5B700 ${value}%, #00AEEF ${value}%, #00AEEF 100%)`;
+    }
+
+    slider.noUiSlider.on('update', function (values, handle) {
+        var value = Math.round(values[handle]);
+        yellowPercent.textContent = value;
+        bluePercent.textContent = 100 - value;
+        inputField.value = value;
+        updateBackground(value);
+    });
+
+    // Initialize immediately
+    var value = Math.round(slider.noUiSlider.get());
+    yellowPercent.textContent = value;
+    bluePercent.textContent = 100 - value;
+    inputField.value = value;
+    updateBackground(value);
+});
+</script>
+{{ endblock }}

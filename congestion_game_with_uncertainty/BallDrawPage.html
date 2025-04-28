@@ -1,0 +1,38 @@
+{% load static %}
+
+{{ block style }}
+<link rel="stylesheet" href="{% static 'global/global_styles.css' %}">
+<style>
+.ball-draw-container {
+    text-align: center;
+    margin-top: 50px;
+    font-size: 22px;
+}
+
+.ball-draw-image {
+    margin: 30px auto;
+    width: 220px;
+    height: auto;
+}
+</style>
+{{ endblock }}
+
+{{ block content }}
+<div class="narrow-body">
+    <div class="ball-draw-container">
+        <p>A ball has been randomly drawn for Box A.</p>
+        <p><b>The color of the ball is hidden for now.</b> </p>
+           <p> There is an equal chance (50/50) that the ball is either <span class="yellow-bold">YELLOW</span> or <span class="blue-bold">BLUE</span>.</p>
+        <p>Next, you will make a guess about the probability of the ball in Box A being <span class="yellow-bold">YELLOW</span>.</p>
+
+        <img src="{% static 'congestion_game_with_uncertainty/images/ball_draw.gif' %}" alt="Ball drawing..." class="ball-draw-image">
+    </div>
+
+    <div class="next-button">
+        {{ next_button }}
+    </div>
+</div>
+{{ endblock }}
+
+{{ block script }}
+{{ endblock }}
