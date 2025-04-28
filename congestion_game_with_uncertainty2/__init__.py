@@ -13,7 +13,7 @@ class C(BaseConstants):
 
 
 class Subsession(BaseSubsession):
-    def creating_session(subsession):
+    def creating_session(subsedssion):
         for group in subsession.get_groups():
             # Assign a random color for Box A (YELLOW or BLUE)
             group.box_a_color = random.choice(['YELLOW', 'BLUE'])
