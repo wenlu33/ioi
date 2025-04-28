@@ -143,7 +143,7 @@ class ResultsWaitPage(WaitPage):
         num_box_b = sum(1 for p in players if p.choice == 'B')
 
         # Assign box_b_size based on the number of players choosing Box B
-        if num_box_b <= 2:
+        if num_box_b > 2:
             group.box_b_size = 'Small'
         else:
             group.box_b_size = 'Large'

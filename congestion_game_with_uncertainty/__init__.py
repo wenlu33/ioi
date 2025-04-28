@@ -90,7 +90,7 @@ def set_group_results(group: Group):
     num_box_b = sum(1 for p in players if p.choice == 'B')
 
     # Determine box size
-    if num_box_b <= 2:
+    if num_box_b > 2:
         group.box_b_size = 'Small'
     else:
         group.box_b_size = 'Large'
