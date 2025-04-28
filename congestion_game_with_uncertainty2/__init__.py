@@ -9,7 +9,7 @@ Game with Guess → Choose → Group Result (Part 2 for BI and BT Treatments)
 class C(BaseConstants):
     NAME_IN_URL = 'congestion_game_with_uncertainty2'
     PLAYERS_PER_GROUP = 5
-    NUM_ROUNDS = 10  # 10 rounds total for each treatment
+    NUM_ROUNDS = 5  # 10 rounds total for each treatment
 
 
 class Subsession(BaseSubsession):
