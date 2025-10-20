@@ -15,20 +15,20 @@ SESSION_CONFIGS = [
     dict(
         name='IOI_BB',
         display_name='IOI - Treatment BB',
-        app_sequence=['instruction', 'congestion_game_with_uncertainty', 'instruction2', 'congestion_game_with_uncertainty2'],
-        treatments=['BB'],
+        app_sequence=['instruction', 'congestion_game_with_uncertainty', 'instruction2', 'congestion_game_with_uncertainty2', 'survey'],
+        treatment='BB',
     ),
     dict(
         name='IOI_BI',
         display_name='IOI - Treatment BI',
-        app_sequence=['instruction', 'congestion_game_with_uncertainty', 'instruction2', 'congestion_game_with_uncertainty2'],
-        treatments=['BI'],
+        app_sequence=['instruction', 'congestion_game_with_uncertainty', 'instruction2', 'congestion_game_with_uncertainty2', 'survey'],
+        treatment='BI',
     ),
     dict(
         name='IOI_BT',
         display_name='IOI - Treatment BT',
-        app_sequence=['instruction', 'congestion_game_with_uncertainty', 'instruction2', 'congestion_game_with_uncertainty2'],
-        treatments=['BT'],
+        app_sequence=['instruction', 'congestion_game_with_uncertainty', 'instruction2', 'congestion_game_with_uncertainty2', 'survey'],
+        treatment='BT',
     ),
 ]
 
@@ -39,9 +39,9 @@ SESSION_CONFIGS = [
 
 SESSION_CONFIG_DEFAULTS = dict(
     num_demo_participants=5,
-    exchange_rate=3,
-    real_world_currency_per_point=3,
-    participation_fee=5.00,
+    exchange_rate=0.5,  # ← Changed to 0.5 (1 ECU = $0.50)
+    real_world_currency_per_point=0.5,  # ← Also 0.5
+    participation_fee=3.00,
     doc=""
 )
 

@@ -1,23 +1,20 @@
-{{block styles}}
+{{ block style }}
 <link rel="stylesheet" type="text/css" href="{{ static 'global/global_styles.css' }}"/>
-{{endblock}}
-
-{{ block title }}
-<div class="narrow-body">
-    Post-Task Survey
-</div>
 {{ endblock }}
 
-{% block content %}
+{{ block title }}
+<div class="narrow-body">Post-Task Survey</div>
+{{ endblock }}
 
+{{ block content }}
+<div class="narrow-body">
     <p>
         <b>Please answer the following questions.</b>
     </p>
 
-
-    {{for question in form}}
+    {% for question in form %}
         <div class="form-group">
-                {{question.label}}
+            {{ question.label }}
             <div class="radio-select-option">
                 {{ question }}
                 {% if question.errors %}
@@ -27,7 +24,8 @@
                 {% endif %}
             </div>
         </div>
-    {{endfor}}
-    <div class="next-button">{{ next_button }}</div>
+    {% endfor %}
 
-{% endblock %}
+    <div class="next-button">{{ next_button }}</div>
+</div>
+{{ endblock %}

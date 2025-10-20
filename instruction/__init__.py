@@ -5,12 +5,20 @@ import pagetime
 doc = """
 Consent and Welcome pages with treatment assignment (BB, BI, BT).
 """
+# def creating_session(subsession):
+#     import itertools
+#     print("CREATING_SESSION IS RUNNING")  # 🔥 Add this
+#     treatments = itertools.cycle(subsession.session.config['treatments'])
+#     for player in subsession.get_players():
+#         player.participant.treatment = next(treatments)
+
 def creating_session(subsession):
-    import itertools
-    print("CREATING_SESSION IS RUNNING")  # 🔥 Add this
-    treatments = itertools.cycle(subsession.session.config['treatments'])
+    # Get the single treatment from session config
+    treatment = subsession.session.config['treatment']
+
+    # Assign this treatment to all players
     for player in subsession.get_players():
-        player.participant.treatment = next(treatments)
+        player.participant.treatment = treatment
 
 class C(BaseConstants):
     NAME_IN_URL = 'instruction'
@@ -37,17 +45,17 @@ class Player(BasePlayer):
             [1, 'A random draw'],
             [2, 'The number of people who choose Box B'],
             [3, 'The color of the ball in Box A'],
-            [4, 'The number of people who choose Box A']
+            [4, 'The total number of people in your group']
         ],
         widget=widgets.RadioSelect
     )
     q3 = models.IntegerField(
         choices=[
-            [1, '3.0 ECU'],
-            [2, '2.5 ECU'],
-            [3, '2 ECU'],
-            [4, '1.5 ECU'],
-            [5, '1 ECU']
+            [1, '30 ECU'],
+            [2, '25 ECU'],
+            [3, '20 ECU'],
+            [4, '15 ECU'],
+            [5, '10 ECU']
         ],
         widget=widgets.RadioSelect
     )
@@ -91,11 +99,11 @@ class Player(BasePlayer):
     # Only for BT treatment
     q5_bt = models.IntegerField(
         choices=[
-            [1, '3.0 ECU'],
-            [2, '2.5 ECU'],
-            [3, '2 ECU'],
-            [4, '1.5 ECU'],
-            [5, '1 ECU']
+            [1, '30 ECU'],
+            [2, '25 ECU'],
+            [3, '20 ECU'],
+            [4, '15 ECU'],
+            [5, '10 ECU']
         ],
         widget=widgets.RadioSelect,
         blank=True

@@ -2,188 +2,365 @@ from otree.api import *
 import random
 
 doc = """
-Game with Guess → Choose → Group Result (Part 2 for BI and BT Treatments)
+Part 2: With Recommendation Ball System
 """
 
 
 class C(BaseConstants):
     NAME_IN_URL = 'congestion_game_with_uncertainty2'
     PLAYERS_PER_GROUP = 5
-    NUM_ROUNDS = 5  # 10 rounds total for each treatment
+    NUM_ROUNDS = 10
 
 
 class Subsession(BaseSubsession):
-    def creating_session(subsedssion):
-        for group in subsession.get_groups():
-            # Assign a random color for Box A (YELLOW or BLUE)
-            group.box_a_color = random.choice(['YELLOW', 'BLUE'])
+    pass
 
-            # Make sure treatment is assigned (done in instruction app)
-            for player in subsession.get_players():
-                player.participant.treatment = player.participant.vars.get('treatment',
-                                                                           'BB')  # Default to 'BB' if treatment not set
+
+def creating_session(subsession):
+    # Shuffle groups each round (except round 1)
+    if subsession.round_number > 1:
+        subsession.group_randomly()
+
+    # ✅ Removed: group.num_chose_box_b = 0 (initial=0 in model handles this)
 
 
 class Group(BaseGroup):
     box_a_color = models.StringField()  # YELLOW or BLUE
     box_b_size = models.StringField()  # Small or Large
-    box_b_earnings = models.FloatField()
+    box_b_earnings = models.FloatField(initial=0)  # ✅ Added initial value
+    num_chose_box_b = models.IntegerField(initial=0)
 
 
 class Player(BasePlayer):
-    first_guess = models.IntegerField(label="Your guess about Yellow ball", min=0, max=100)
+    recommendation = models.StringField()  # A or B
     choice = models.StringField(
         choices=[['A', 'Choose Box A'], ['B', 'Choose Box B']],
         widget=widgets.RadioSelect
     )
-    round_payoff = models.FloatField()  # Renamed 'payoff' to 'round_payoff'
-    second_guess = models.IntegerField(min=0, max=100, blank=True)  # For BI treatment only
 
 
 # ----------------- Pages -----------------
-class BallDrawPage(Page):
+
+class InstructionsWaitPage(WaitPage):
+    """Experimenter control: Wait after reading Part 2 instructions"""
+    title_text = "Please wait"
+    body_text = "You have finished reading the Part 2 instructions. Please wait for the experimenter to begin Part 2."
+
     @staticmethod
     def is_displayed(player: Player):
-        return True  # Always show Ball Draw page before guess
+        return player.round_number == 1
+
+
+class BallDrawPage(Page):
+    """Shows animation of ball being drawn"""
 
     @staticmethod
     def vars_for_template(player: Player):
-        return dict()  # Just returns an empty dict
-
-    def before_next_page(player, timeout_happened):
-        # Assign box_a_color here during BallDrawPage
-        player.group.box_a_color = random.choice(['YELLOW', 'BLUE'])  # Assign color for Box A
+        return dict()
 
 
-class GuessPage1(Page):
-    form_model = 'player'
-    form_fields = ['first_guess']
+class RecommendationWaitPage(WaitPage):
+    """
+    CRITICAL: Generate ball color AND recommendations for ALL players together
+    This ensures proper distribution (5 A's if YELLOW, or 3 A's + 2 B's if BLUE)
+    """
+    title_text = "Drawing Recommendation Balls..."
+    body_text = "Please wait while the computer prepares your recommendation ball."
+
+    @staticmethod
+    def after_all_players_arrive(group: Group):
+        # 🎯 First: Randomly determine Box A color (BEFORE recommendations)
+        group.box_a_color = random.choice(['YELLOW', 'BLUE'])
+
+        # Then: Generate recommendations based on color
+        if group.box_a_color == 'YELLOW':
+            # All 5 recommendation balls are "A"
+            for player in group.get_players():
+                player.recommendation = 'A'
+        else:
+            # BLUE: 3 balls labeled "A", 2 balls labeled "B"
+            recommendations = ['A', 'A', 'A', 'B', 'B']
+            random.shuffle(recommendations)  # Randomly distribute
+
+            players = group.get_players()
+            for i, player in enumerate(players):
+                player.recommendation = recommendations[i]
+
+
+class RecommendationPage(Page):
+    """Shows the player their recommendation ball"""
+
+    @staticmethod
+    def vars_for_template(player: Player):
+        return dict(
+            recommendation=player.recommendation,
+            round_number=player.round_number
+        )
 
 
 class Choice(Page):
     form_model = 'player'
     form_fields = ['choice']
 
-
-# -------------- For BI and BT treatment pages ----------------
-# This page only appears for BI treatment to show the Clue Ball.
-class ClueBallPage(Page):
-    @staticmethod
-    def is_displayed(player: Player):
-        return player.participant.treatment == 'BI'  # Only for BI treatment
-
     @staticmethod
     def vars_for_template(player: Player):
-        # Construct the image URL based on the Clue Ball color
-        clue_ball_image_url = f"congestion_game_with_uncertainty/images/{player.participant.clue_ball_color}_ball.png"
-
-        # Return the variables to the template
-        return {
-            "clue_ball_color": player.participant.clue_ball_color,  # Pass the Clue Ball color
-            "clue_ball_image_url": clue_ball_image_url,  # Pass the dynamically constructed URL
-        }
-
-
-class ClueBallDrawPage(Page):
-    @staticmethod
-    def is_displayed(player: Player):
-        return player.participant.treatment == 'BI'  # Only for BI treatment
-
-    @staticmethod
-    def vars_for_template(player: Player):
-        # Determine the color of Box A
-        box_a_color = player.group.box_a_color
-
-        # Now determine the Clue Ball color based on Box A color
-        if box_a_color == 'YELLOW':
-            # If Box A is Yellow, the Clue Ball is Yellow and comes from Clue Box X
-            player.participant.clue_ball_color = 'yellow'  # Always yellow in this case
-        else:
-            # If Box A is Blue, the Clue Ball can either be Blue or Yellow (from Clue Box Y)
-            # 1/3 chance for Yellow and 2/3 chance for Blue
-            player.participant.clue_ball_color = random.choices(
-                ['yellow', 'blue'],
-                weights=[1, 2],  # Weighting 1 for yellow and 2 for blue
-                k=1  # Generate a single random choice
-            )[0]
-
-        return {
-            "box_a_color": box_a_color,
-            "clue_ball_color": player.participant.clue_ball_color,
-        }
-
-    def before_next_page(player, timeout_happened):
-        # The logic for choosing the Clue Ball color has already been executed in vars_for_template
-        pass
-
-# This page handles the second guess for BI treatment after the Clue Ball is shown
-class SecondGuessPage(Page):
-    form_model = 'player'
-    form_fields = ['second_guess']
-
-    @staticmethod
-    def is_displayed(player: Player):
-        return player.participant.treatment == 'BI'  # Only for BI treatment
-
-    @staticmethod
-    def vars_for_template(player: Player):
-        return {
-            "box_a_color": player.group.box_a_color  # Show the color of Box A
-        }
-
-    def before_next_page(player, timeout_happened):
-        # Store the second guess value
-        player.second_guess = player.second_guess  # Ensure second_guess is saved
+        return dict(
+            recommendation=player.recommendation,
+            round_number=player.round_number
+        )
 
 
 class ResultsWaitPage(WaitPage):
+    """Wait for all players to make their choice, then calculate results"""
+
     @staticmethod
     def after_all_players_arrive(group: Group):
-        players = group.get_players()
-        num_box_b = sum(1 for p in players if p.choice == 'B')
+        # Box A color already set in RecommendationWaitPage
+        # Just calculate Box B results
+        set_group_results(group)
 
-        # Assign box_b_size based on the number of players choosing Box B
-        if num_box_b > 2:
-            group.box_b_size = 'Small'
-        else:
-            group.box_b_size = 'Large'
-
-        # For BT treatment, modify payoff structure for Box B in Part 2
-        treatment = players[0].participant.treatment  # All players in the group have the same treatment
-        if treatment == 'BT':  # For BT treatment
-            modified_payoff_table = {0: 2.5, 1: 2, 2: 1.5, 3: 1, 4: 0.5, 5: 0}
-            group.box_b_earnings = modified_payoff_table.get(num_box_b, 0)
-        else:
-            # Standard payoff structure for Box B for BI and BB treatments
-            payoff_table = {0: 3, 1: 2.5, 2: 2, 3: 1.5, 4: 1, 5: 0.5}
-            group.box_b_earnings = payoff_table.get(num_box_b, 0)
-
-        # Assign payoff to players based on choice
-        for p in players:
-            if p.choice == 'A':
-                if group.box_a_color == 'YELLOW':
-                    p.round_payoff = 3  # Renamed from 'payoff' to 'round_payoff'
-                else:
-                    p.round_payoff = 1  # Renamed from 'payoff' to 'round_payoff'
-            else:
-                p.round_payoff = group.box_b_earnings  # Renamed from 'payoff' to 'round_payoff'
 
 class ResultsPage(Page):
     @staticmethod
     def vars_for_template(player: Player):
         group = player.group
-        players = group.get_players()
-        num_box_b = sum(1 for p in players if p.choice == 'B')
+
+        # Calculate earning
+        if player.choice == 'A':
+            if group.box_a_color == 'YELLOW':
+                earning = 30
+            else:
+                earning = 10
+        else:
+            earning = group.box_b_earnings
 
         return dict(
             round_number=player.round_number,
-            first_guess=player.first_guess,
+            recommendation=player.recommendation,
             choice=player.choice,
             box_a_color=group.box_a_color,
             box_b_size=group.box_b_size,
-            num_box_b=num_box_b,
-            round_earnings=player.round_payoff,  # Renamed from 'payoff' to 'round_payoff'
-            second_guess=player.second_guess  # Pass the second_guess value to ResultsPage
+            num_box_b=group.num_chose_box_b,
+            round_earnings=earning
         )
+
+    @staticmethod
+    def before_next_page(player: Player, timeout_happened):
+        # ✅ SET THE PAYOFF (important!)
+        group = player.group
+
+        if player.choice == 'A':
+            if group.box_a_color == 'YELLOW':
+                player.payoff = 30
+            else:
+                player.payoff = 10
+        else:
+            player.payoff = group.box_b_earnings
+
+        # ✅ Store Part 2 data for final payment calculation
+        key = f'part2_round_{player.round_number}'
+        player.participant.vars[key] = {
+            'choice': player.choice,
+            'box_a_color': group.box_a_color,
+            'num_chose_b': group.num_chose_box_b,
+            'box_b_earnings': group.box_b_earnings,
+            'recommendation': player.recommendation
+        }
+
+
+# class FinalPayment(Page):
+#     @staticmethod
+#     def is_displayed(player: Player):
+#         return player.round_number == C.NUM_ROUNDS
+#
+#     @staticmethod
+#     def vars_for_template(player: Player):
+#         import random
+#
+#         # Get exchange rate from settings
+#         exchange_rate = player.session.config.get('exchange_rate', 0.5)  # ✅ Added default
+#
+#         # Total rounds: 10 from Part 1 + 10 from Part 2 = 20 rounds
+#         total_rounds = 20
+#         payment_round = random.randint(1, total_rounds)
+#
+#         # Determine which part and get the player data
+#         if payment_round <= 10:
+#             # Payment from Part 1 (rounds 1-10)
+#             part = 1
+#             round_in_part = payment_round
+#
+#             # Retrieve stored Part 1 data
+#             part1_data_key = f'part1_round_{round_in_part}'
+#
+#             if part1_data_key in player.participant.vars:
+#                 part1_data = player.participant.vars[part1_data_key]
+#                 choice = part1_data['choice']
+#                 box_a_color = part1_data['box_a_color']
+#                 num_chose_b = part1_data['num_chose_b']
+#                 box_b_earnings = part1_data['box_b_earnings']
+#                 recommendation = None  # No recommendation in Part 1
+#             else:
+#                 # ⚠️ WARNING: Part 1 data not found - this shouldn't happen
+#                 # Fallback: use Part 2 Round 1
+#                 payment_round_player = player.in_round(1)
+#                 choice = payment_round_player.choice
+#                 box_a_color = payment_round_player.group.box_a_color
+#                 num_chose_b = payment_round_player.group.num_chose_box_b
+#                 box_b_earnings = payment_round_player.group.box_b_earnings
+#                 recommendation = payment_round_player.recommendation
+#                 part = 2
+#                 round_in_part = 1
+#         else:
+#             # Payment from Part 2 (rounds 11-20)
+#             part = 2
+#             round_in_part = payment_round - 10
+#             payment_round_player = player.in_round(round_in_part)
+#
+#             choice = payment_round_player.choice
+#             box_a_color = payment_round_player.group.box_a_color
+#             num_chose_b = payment_round_player.group.num_chose_box_b
+#             box_b_earnings = payment_round_player.group.box_b_earnings
+#             recommendation = payment_round_player.recommendation
+#
+#         # Calculate earnings IN ECU
+#         if choice == 'A':
+#             if box_a_color == 'YELLOW':
+#                 round_earnings_ecu = 30
+#             else:
+#                 round_earnings_ecu = 10
+#         else:
+#             round_earnings_ecu = box_b_earnings
+#
+#         # Convert ECU to dollars
+#         round_earnings_dollars = round_earnings_ecu * exchange_rate
+#
+#         participation_fee = 3
+#         total_payment = participation_fee + round_earnings_dollars
+#
+#         # Save final payment
+#         player.participant.payoff = total_payment
+#
+#         return dict(
+#             payment_round=payment_round,
+#             part=part,
+#             round_in_part=round_in_part,
+#             round_earnings_ecu=round_earnings_ecu,
+#             round_earnings_dollars=round_earnings_dollars,
+#             exchange_rate=exchange_rate,
+#             participation_fee=participation_fee,
+#             total_payment=total_payment,
+#             box_a_color=box_a_color,
+#             choice=choice,
+#             num_chose_b=num_chose_b,
+#             recommendation=recommendation
+#         )
+class FinalPayment(Page):
+    @staticmethod
+    def is_displayed(player: Player):
+        return player.round_number == C.NUM_ROUNDS
+
+    @staticmethod
+    def vars_for_template(player: Player):
+        import random
+
+        # Get exchange rate from settings
+        exchange_rate = player.session.config.get('exchange_rate', 0.5)
+
+        # Total rounds: 10 from Part 1 + 10 from Part 2 = 20 rounds
+        total_rounds = 20
+        payment_round = random.randint(1, total_rounds)
+
+        # Determine which part and get the player data
+        if payment_round <= 10:
+            part = 1
+            round_in_part = payment_round
+            part1_data_key = f'part1_round_{round_in_part}'
+
+            if part1_data_key in player.participant.vars:
+                part1_data = player.participant.vars[part1_data_key]
+                choice = part1_data['choice']
+                box_a_color = part1_data['box_a_color']
+                num_chose_b = part1_data['num_chose_b']
+                box_b_earnings = part1_data['box_b_earnings']
+                recommendation = None
+            else:
+                payment_round_player = player.in_round(1)
+                choice = payment_round_player.choice
+                box_a_color = payment_round_player.group.box_a_color
+                num_chose_b = payment_round_player.group.num_chose_box_b
+                box_b_earnings = payment_round_player.group.box_b_earnings
+                recommendation = payment_round_player.recommendation
+                part = 2
+                round_in_part = 1
+        else:
+            part = 2
+            round_in_part = payment_round - 10
+            payment_round_player = player.in_round(round_in_part)
+            choice = payment_round_player.choice
+            box_a_color = payment_round_player.group.box_a_color
+            num_chose_b = payment_round_player.group.num_chose_box_b
+            box_b_earnings = payment_round_player.group.box_b_earnings
+            recommendation = payment_round_player.recommendation
+
+        # Calculate earnings IN ECU
+        if choice == 'A':
+            if box_a_color == 'YELLOW':
+                round_earnings_ecu = 30
+            else:
+                round_earnings_ecu = 10
+        else:
+            round_earnings_ecu = box_b_earnings
+
+        # Convert ECU to dollars
+        round_earnings_dollars = round_earnings_ecu * exchange_rate
+
+        # ✅ Store game earnings in participant.payoff (survey will add participation fee)
+        player.participant.payoff = round_earnings_dollars
+
+        return dict(
+            payment_round=payment_round,
+            part=part,
+            round_in_part=round_in_part,
+            round_earnings_ecu=round_earnings_ecu,
+            round_earnings_dollars=round_earnings_dollars,
+            exchange_rate=exchange_rate,
+            box_a_color=box_a_color,
+            choice=choice,
+            num_chose_b=num_chose_b,
+            recommendation=recommendation
+        )
+
+# ----------------- Functions -----------------
+
+def set_group_results(group: Group):
+    """Calculate Box B results after all players chose"""
+    players = group.get_players()
+
+    # Count how many chose Box B
+    num_box_b = sum(1 for p in players if p.choice == 'B')
+    group.num_chose_box_b = num_box_b
+
+    # Determine box size
+    if num_box_b > 2:
+        group.box_b_size = 'Small'
+    else:
+        group.box_b_size = 'Large'
+
+    # Set Box B earnings based on table
+    payoff_table = {0: 30, 1: 25, 2: 20, 3: 15, 4: 10, 5: 5}
+    group.box_b_earnings = payoff_table.get(num_box_b, 0)
+
+
 # ----------------- Page Sequence -----------------
-page_sequence = [BallDrawPage, GuessPage1,ClueBallDrawPage, ClueBallPage, SecondGuessPage, Choice, ResultsWaitPage, ResultsPage]
+
+page_sequence = [
+    InstructionsWaitPage,  # Round 1 only - experimenter control
+    BallDrawPage,  # Show ball being drawn
+    RecommendationWaitPage,  # Generate ball color + recommendations
+    RecommendationPage,  # Show YOUR recommendation ball
+    Choice,  # Choose Box A or Box B
+    ResultsWaitPage,  # Wait for all players
+    ResultsPage,  # Show results
+    FinalPayment  # Final payment (last round only)
+]

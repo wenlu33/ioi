@@ -2,92 +2,143 @@ from otree.api import *
 import random
 
 doc = """
-Game with Guess → Choose → Group Result
+Game with Choose → Group Result
 """
+
 
 class C(BaseConstants):
     NAME_IN_URL = 'congestion_game_with_uncertainty'
     PLAYERS_PER_GROUP = 5
-    NUM_ROUNDS = 5
+    NUM_ROUNDS = 10
+
 
 class Subsession(BaseSubsession):
-    def creating_session(subsession):
-        pass
-        # We don't set box_a_color here — moved to after_all_players_arrive!
+    pass
+
+
+# def creating_session(subsession):
+#     # Set treatment in round 1
+#     if subsession.round_number == 1:
+#         for player in subsession.get_players():
+#             treatment = subsession.session.config.get('treatment', 'BB')
+#             player.participant.treatment = treatment
+#
+#     # Shuffle groups each round (except round 1)
+#     if subsession.round_number > 1:
+#         subsession.group_randomly()
+#
+#     # 🎯 Draw ball color BEFORE players see anything
+#     for group in subsession.get_groups():
+#         group.box_a_color = random.choice(['YELLOW', 'BLUE'])
+#         # Removed: group.num_chose_box_b = 0  (not needed, initial=0 handles it)
+
+def creating_session(subsession):
+    # Don't set treatment here - it's already set in instruction app
+
+    # Shuffle groups each round (except round 1)
+    if subsession.round_number > 1:
+        subsession.group_randomly()
+
+    # Draw ball color BEFORE players see anything
+    for group in subsession.get_groups():
+        group.box_a_color = random.choice(['YELLOW', 'BLUE'])
 
 class Group(BaseGroup):
     box_a_color = models.StringField()  # YELLOW or BLUE
-    box_b_size = models.StringField()   # Small or Large
-    box_b_earnings = models.FloatField()
+    box_b_size = models.StringField()  # Small or Large
+    box_b_earnings = models.FloatField(initial=0)  # ✅ Added initial value
+    num_chose_box_b = models.IntegerField(initial=0)
+
 
 class Player(BasePlayer):
-    first_guess = models.IntegerField(label="Your guess about Yellow ball", min=0, max=100)
     choice = models.StringField(
         choices=[['A', 'Choose Box A'], ['B', 'Choose Box B']],
         widget=widgets.RadioSelect
     )
 
+
 # ----------------- Pages -----------------
+
 class BallDrawPage(Page):
-    @staticmethod
-    def is_displayed(player: Player):
-        return True  # Always show Ball Draw page before guess
+    """Shows animation of ball being drawn (already drawn, just not revealed)"""
 
     @staticmethod
     def vars_for_template(player: Player):
-        return dict()
+        return dict(
+            box_a_color=player.group.box_a_color  # Available if you want to show animation
+        )
 
-class GuessPage1(Page):
-    form_model = 'player'
-    form_fields = ['first_guess']
 
 class Choice(Page):
     form_model = 'player'
     form_fields = ['choice']
 
+
 class ResultsWaitPage(WaitPage):
+    """Wait for all players, then calculate results"""
+
     @staticmethod
     def after_all_players_arrive(group: Group):
-        # 🎯 Randomly decide color of ball in Box A
-        group.box_a_color = random.choice(['YELLOW', 'BLUE'])
-
-        # 🎯 Set Box B size and earnings based on number of people choosing Box B
+        # Ball color already set in creating_session
+        # Just calculate Box B results
         set_group_results(group)
+
 
 class ResultsPage(Page):
     @staticmethod
     def vars_for_template(player: Player):
         group = player.group
 
-        # Calculate payoff
+        # Calculate earning
         if player.choice == 'A':
             if group.box_a_color == 'YELLOW':
-                earning = 3
+                earning = 30
             else:
-                earning = 1
+                earning = 10
         else:
             earning = group.box_b_earnings
 
-        players = group.get_players()
-        num_box_b = sum(1 for p in players if p.choice == 'B')
-
         return dict(
             round_number=player.round_number,
-            first_guess=player.first_guess,
             choice=player.choice,
             box_a_color=group.box_a_color,
             box_b_size=group.box_b_size,
-            num_box_b=num_box_b,
+            num_box_b=group.num_chose_box_b,
             round_earnings=earning
         )
+
+    @staticmethod
+    def before_next_page(player: Player, timeout_happened):
+        # ✅ SET THE PAYOFF (important!)
+        group = player.group
+
+        if player.choice == 'A':
+            if group.box_a_color == 'YELLOW':
+                player.payoff = 30
+            else:
+                player.payoff = 10
+        else:
+            player.payoff = group.box_b_earnings
+
+        # Store Part 1 data for later payment calculation
+        key = f'part1_round_{player.round_number}'
+        player.participant.vars[key] = {
+            'choice': player.choice,
+            'box_a_color': player.group.box_a_color,
+            'num_chose_b': player.group.num_chose_box_b,
+            'box_b_earnings': player.group.box_b_earnings
+        }
+
 
 # ----------------- Functions -----------------
 
 def set_group_results(group: Group):
+    """Calculate Box B results after all players chose"""
     players = group.get_players()
 
     # Count how many chose Box B
     num_box_b = sum(1 for p in players if p.choice == 'B')
+    group.num_chose_box_b = num_box_b
 
     # Determine box size
     if num_box_b > 2:
@@ -96,9 +147,11 @@ def set_group_results(group: Group):
         group.box_b_size = 'Large'
 
     # Set Box B earnings based on table
-    payoff_table = {0: 3, 1: 2.5, 2: 2, 3: 1.5, 4: 1, 5: 0.5}
+    # ✅ Fixed payoff table (was missing 0 players case)
+    payoff_table = {0: 30, 1: 25, 2: 20, 3: 15, 4: 10, 5: 5}
     group.box_b_earnings = payoff_table.get(num_box_b, 0)
+
 
 # ----------------- Page Sequence -----------------
 
-page_sequence = [BallDrawPage, GuessPage1, Choice, ResultsWaitPage, ResultsPage]
+page_sequence = [BallDrawPage, Choice, ResultsWaitPage, ResultsPage]

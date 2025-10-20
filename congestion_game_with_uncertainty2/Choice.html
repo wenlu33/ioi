@@ -1,99 +1,196 @@
-{% load static %}
-
-{{ block style }}
-<link rel="stylesheet" href="{% static 'global/global_styles.css' %}">
-<style>
-.choice-container {
-    display: flex;
-    justify-content: center;
-    gap: 100px;
-    margin-bottom: 30px;
-}
-
-.choice-box {
-    width: 320px; /* wider box because image is bigger */
-    min-height: 600px; /* increase total box height */
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
-}
-
-.choice-box img.main-img {
-    width: 250px; /* 🎯 Bigger image */
-    margin-top: 10px;
-    margin-bottom: 10px;
-}
-
-.choice-description {
-    min-height: 100px; /* 🎯 Force same text block height */
-    margin-top: 10px;
-    margin-bottom: 10px;
-    font-size: 17px;
-}
-
-.choice-radio {
-    margin-top: 20px; /* 🎯 More breathing room between text and radio */
-    font-size: 17px;
-}
-
-.next-button {
-    margin-top: 30px;
-    text-align: center;
-}
-</style>
+{{ block title }}
+Your Decision
 {{ endblock }}
 
 {{ block content }}
-<div class="narrow-body">
-    <h2>Your Decision</h2>
+<div style="max-width: 1200px; margin: 0 auto; padding: 40px 20px;">
 
-    <p>Please choose between:</p>
+    <!-- Header -->
+    <h1 style="text-align: center; font-size: 36px; font-weight: normal; margin-bottom: 10px;">Your Decision</h1>
+    <p style="text-align: center; font-size: 18px; color: #666; margin-bottom: 30px;">Please choose between:</p>
 
-    <div class="choice-container">
-        <div class="choice-box">
-            <h3>Box A</h3>
-            <img src="{% static 'congestion_game_with_uncertainty/images/box_a_image.png' %}" alt="Box A" class="main-img">
+    <!-- Collapsible Payoff Table (GRAY) -->
+    <details style="background-color: #f8f9fa; border: 2px solid #999; padding: 15px 20px; margin-bottom: 30px; border-radius: 5px; cursor: pointer;">
+        <summary style="font-size: 18px; font-weight: bold; color: #333; cursor: pointer; user-select: none;">
+            Click here to see payoff table
+        </summary>
+        <div style="margin-top: 20px; padding-top: 15px; border-top: 1px solid #999;">
 
-            <p class="choice-description">
-                Contains a ball with an <b>unknown color</b> — either
-                <span class="yellow-bold">YELLOW</span> or
-                <span class="blue-bold">BLUE</span>.
-                <br>
-                The chance is <b>50%</b> for each color.
-            </p>
+            <!-- Split into two sections -->
+            <div style="display: flex; gap: 40px; justify-content: center; flex-wrap: wrap;">
 
-            <div class="choice-radio">
-                <label>
-                    <input type="radio" name="choice" value="A" required> Choose Box A
-                </label>
+                <!-- Box A Section -->
+                <div style="flex: 0 0 auto;">
+                    <h3 style="font-size: 20px; font-weight: bold; margin-bottom: 15px; text-align: center;">Box A</h3>
+                    <table style="border-collapse: collapse; font-size: 16px;">
+                        <thead>
+                            <tr style="background-color: #e9ecef;">
+                                <th style="padding: 12px 20px; border: 2px solid #333; text-align: center;">Ball Color</th>
+                                <th style="padding: 12px 20px; border: 2px solid #333; text-align: center;">Payoff</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td style="padding: 12px 20px; border: 2px solid #333; text-align: center; background-color: #FFD700; font-weight: bold;">YELLOW</td>
+                                <td style="padding: 12px 20px; border: 2px solid #333; text-align: center; font-weight: bold;">30</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 12px 20px; border: 2px solid #333; text-align: center; background-color: #4169E1; color: white; font-weight: bold;">BLUE</td>
+                                <td style="padding: 12px 20px; border: 2px solid #333; text-align: center; font-weight: bold;">10</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Box B Section -->
+                <div style="flex: 0 0 auto;">
+                    <h3 style="font-size: 20px; font-weight: bold; margin-bottom: 15px; text-align: center;">Box B</h3>
+                    <table style="border-collapse: collapse; font-size: 16px;">
+                        <thead>
+                            <tr style="background-color: #e9ecef;">
+                                <th style="padding: 12px 20px; border: 2px solid #333; text-align: center;"># Choosing B (n)</th>
+                                <th style="padding: 12px 20px; border: 2px solid #333; text-align: center;">Payoff</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td style="padding: 10px 20px; border: 2px solid #333; text-align: center;">1</td>
+                                <td style="padding: 10px 20px; border: 2px solid #333; text-align: center; font-weight: bold;">25</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 10px 20px; border: 2px solid #333; text-align: center;">2</td>
+                                <td style="padding: 10px 20px; border: 2px solid #333; text-align: center; font-weight: bold;">20</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 10px 20px; border: 2px solid #333; text-align: center;">3</td>
+                                <td style="padding: 10px 20px; border: 2px solid #333; text-align: center; font-weight: bold;">15</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 10px 20px; border: 2px solid #333; text-align: center;">4</td>
+                                <td style="padding: 10px 20px; border: 2px solid #333; text-align: center; font-weight: bold;">10</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 10px 20px; border: 2px solid #333; text-align: center;">5</td>
+                                <td style="padding: 10px 20px; border: 2px solid #333; text-align: center; font-weight: bold;">5</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </details>
+
+    <!-- Two Boxes Side by Side -->
+    <div style="display: flex; justify-content: space-around; align-items: flex-start; margin: 40px 0;">
+
+        <!-- Box A -->
+        <div style="flex: 1; text-align: center; margin: 0 30px;">
+            <h2 style="font-size: 28px; font-weight: normal; margin-bottom: 20px;">Box A</h2>
+
+            <!-- Box A Diagram -->
+            <div style="border: 3px solid #333; padding: 40px; background-color: white; margin-bottom: 20px; min-height: 250px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+                <div style="border: 2px dashed #999; border-radius: 50%; width: 80px; height: 80px; display: flex; align-items: center; justify-content: center; font-size: 36px; color: #999;">
+                    ?
+                </div>
+            </div>
+
+            <!-- Box A Colors -->
+            <div style="display: flex; justify-content: center; align-items: center; margin-bottom: 20px;">
+                <div style="width: 50px; height: 50px; background-color: #FFD700; border-radius: 50%; border: 2px solid #333;"></div>
+                <span style="margin: 0 15px; font-size: 20px; font-weight: bold;">or</span>
+                <div style="width: 50px; height: 50px; background-color: #4169E1; border-radius: 50%; border: 2px solid #333;"></div>
+            </div>
+
+            <!-- Box A Description -->
+            <div style="text-align: center; padding: 0 20px;">
+                <p style="font-size: 16px; line-height: 1.6; margin-bottom: 10px;">
+                    Contains a ball with an <strong>unknown color</strong><br>
+                    either <span style="color: #FFD700; font-weight: bold;">YELLOW</span> or <span style="color: #4169E1; font-weight: bold;">BLUE</span>.
+                </p>
+                <p style="font-size: 16px; font-weight: bold;">
+                    The chance is <span style="font-size: 18px;">50%</span> for each color.
+                </p>
             </div>
         </div>
 
-        <div class="choice-box">
-            <h3>Box B</h3>
-            <img src="{% static 'congestion_game_with_uncertainty/images/box_b_image.png' %}" alt="Box B" class="main-img">
+        <!-- Box B -->
+        <div style="flex: 1; text-align: center; margin: 0 30px;">
+            <h2 style="font-size: 28px; font-weight: normal; margin-bottom: 20px;">Box B</h2>
 
-            <p class="choice-description">
-                The ball has an <b>unknown size</b>, which may be <b>small</b> or <b>large</b>,
-                depending on how many people choose Box B.
-            </p>
+            <!-- Box B Diagram -->
+            <div style="border: 3px solid #333; padding: 40px; background-color: white; margin-bottom: 20px; min-height: 250px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+                <div style="position: relative;">
+                    <div style="width: 80px; height: 80px; background: repeating-linear-gradient(45deg, #333, #333 2px, transparent 2px, transparent 6px); border-radius: 50%;"></div>
+                </div>
+            </div>
 
-            <div class="choice-radio">
-                <label>
-                    <input type="radio" name="choice" value="B" required> Choose Box B
-                </label>
+            <!-- Box B Size Diagram -->
+            <div style="display: flex; justify-content: center; align-items: center; margin-bottom: 20px;">
+                <div style="width: 30px; height: 30px; border: 2px solid #333; border-radius: 50%;"></div>
+                <div style="margin: 0 10px; font-size: 20px;">←→</div>
+                <div style="width: 60px; height: 60px; border: 2px solid #333; border-radius: 50%;"></div>
+            </div>
+
+            <!-- Box B Description -->
+            <div style="text-align: center; padding: 0 20px;">
+                <p style="font-size: 16px; line-height: 1.6; margin-bottom: 10px;">
+                    The ball has an <strong>unknown size</strong>, which<br>
+                    may be <strong>small</strong> or <strong>large</strong>, depending on how<br>
+                    many people choose Box B.
+                </p>
             </div>
         </div>
     </div>
 
-    <div class="next-button">
+    <!-- Radio Buttons - NOW HORIZONTAL BELOW BOXES -->
+    <div style="display: flex; justify-content: center; gap: 100px; margin: 40px 0;">
+        {{ formfield 'choice' label="" }}
+    </div>
+
+    <!-- Next Button -->
+    <div style="text-align: right; margin-top: 40px;">
         {{ next_button }}
     </div>
 </div>
-{{ endblock }}
 
-{{ block script }}
-<!-- No extra scripts needed -->
+<style>
+    /* Style radio buttons to be bigger and side by side */
+    input[type="radio"] {
+        width: 20px;
+        height: 20px;
+        cursor: pointer;
+    }
+
+    label {
+        font-size: 18px;
+        cursor: pointer;
+        padding: 10px 20px;
+        display: inline-block;
+        margin: 0 20px;
+    }
+
+    /* Style the details/summary element */
+    summary {
+        list-style: none;
+    }
+
+    summary::-webkit-details-marker {
+        display: none;
+    }
+
+    summary::before {
+        content: "▶ ";
+        font-size: 14px;
+        margin-right: 8px;
+        transition: transform 0.2s;
+    }
+
+    details[open] summary::before {
+        content: "▼ ";
+    }
+
+    details summary:hover {
+        background-color: #e9ecef;
+    }
+</style>
 {{ endblock }}

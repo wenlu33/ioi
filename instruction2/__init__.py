@@ -26,8 +26,8 @@ class Player(BasePlayer):
         choices=[
             [1, 'The ball in Box A is BLUE'],
             [2, 'The ball in Box A is YELLOW'],
-            [3, 'The Clue Ball came from Clue Box X'],
-            [4, 'Everyone in your group saw a blue Clue Ball']
+            [3, 'Everyone in your group received the same Recommendation Ball'],
+            [4, 'You know what Recommendation Ball others received'],
         ],
         widget=widgets.RadioSelect,
         blank=True
@@ -35,10 +35,10 @@ class Player(BasePlayer):
 
     q6_bi = models.IntegerField(
         choices=[
-            [1, 'It selects one randomly each round'],
-            [2, 'It’s based on your group number'],
-            [3, 'It depends on the color of the ball in Box A'],
-            [4, 'It’s different for each participant']
+            [1, 'It randomly selects the number of A and B labels each round'],
+            [2, 'It depends on how many people chose Box B in the previous round'],
+            [3, 'It depends on the unknown color of the ball in Box A'],
+            [4, 'Each participant selects their own Recommendation Ball from a pile']
         ],
         widget=widgets.RadioSelect,
         blank=True
@@ -53,11 +53,11 @@ class Player(BasePlayer):
     # Fields for BT treatment
     q5_bt = models.IntegerField(
         choices=[
-            [1, '3.0 ECU'],
-            [2, '2.5 ECU'],
-            [3, '2 ECU'],
-            [4, '1.5 ECU'],
-            [5, '1 ECU']
+            [1, '30 ECU'],
+            [2, '25 ECU'],
+            [3, '20 ECU'],
+            [4, '15 ECU'],
+            [5, '10 ECU']
         ],
         widget=widgets.RadioSelect,
         blank=True
@@ -81,14 +81,12 @@ class Player(BasePlayer):
     time_examples_wait = models.IntegerField()
 
 # Pages
-
 @pagetime.track
 class Decisions(Page):
-
-    @staticmethod
-    def is_displayed(player: Player):
-        # Only show for BI and BT treatments
-        return player.participant.treatment in ['BI', 'BT']
+    # ❌ REMOVE THIS ENTIRE METHOD:
+    # @staticmethod
+    # def is_displayed(player: Player):
+    #     return player.participant.treatment in ['BI', 'BT']
 
     @staticmethod
     def vars_for_template(player: Player):
@@ -101,44 +99,25 @@ class Decisions(Page):
         player.time_decisions = pagetime.last(player.participant)
 
 
-@pagetime.track
-class Examples(Page):
-
-    @staticmethod
-    def is_displayed(player: Player):
-        # Only show for BI and BT treatments
-        return player.participant.treatment in ['BI', 'BT']
-
-    @staticmethod
-    def vars_for_template(player: Player):
-        treatment = player.participant.treatment
-        exchange_rate = player.subsession.session.config['exchange_rate']
-        return dict(treatment=treatment, exchange_rate=exchange_rate)
-
-    @staticmethod
-    def before_next_page(player, timeout_happened):
-        player.time_examples = pagetime.last(player.participant)
-
 
 @pagetime.track
 class ExamplesWaitPage(Page):
-
-    @staticmethod
-    def is_displayed(player: Player):
-        # Only show for BI and BT treatments
-        return player.participant.treatment in ['BI', 'BT']
+    # ❌ REMOVE THIS ENTIRE METHOD:
+    # @staticmethod
+    # def is_displayed(player: Player):
+    #     return player.participant.treatment in ['BI', 'BT']
 
     @staticmethod
     def before_next_page(player, timeout_happened):
         player.time_examples_wait = pagetime.last(player.participant)
+
 
 class ComprehensionCheck(Page):
     form_model = 'player'
 
     @staticmethod
     def get_form_fields(player):
-        # If treatment is 'BI' or 'BT', show the relevant fields for comprehension check
-        treatment = getattr(player.participant, 'treatment', 'BB')  # Default to 'BB' if not set
+        treatment = getattr(player.participant, 'treatment', 'BB')
         fields = []
 
         if treatment == 'BI':
@@ -182,5 +161,4 @@ class ComprehensionCheck(Page):
         player.time_comprehension = pagetime.last(player.participant)
 
 
-# Sequence of pages
-page_sequence = [Decisions, Examples, ExamplesWaitPage, ComprehensionCheck]
+page_sequence = [Decisions, ExamplesWaitPage, ComprehensionCheck]

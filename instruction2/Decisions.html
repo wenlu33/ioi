@@ -3,242 +3,178 @@
 {{ endblock }}
 
 {{ block title }}
-<div class="narrow-body">
-Your Decision
-</div>
+<div class="narrow-body">Your Decision</div>
 {{ endblock }}
 
 {{ block content }}
 <div class="narrow-body">
 
+{% if treatment == 'BI' %}
 <h2>Part 2</h2>
 
-{{ if treatment == 'BB' }}
+<p>All decisions will be made using the computer.<br>
+Please read the instructions below carefully, as they explain the task and how your earnings will be determined.</p>
+
+<hr>
 
 <div class="instructions-subheading">On Your Screen</div>
 <p>
-- You are presented with Box A and Box B.<br>
-- The computer places one ball in each box.<br>
-- The ball in Box A has an unknown color, either <span class="yellow-bold">YELLOW</span> or <span class="blue-bold">BLUE</span>.<br>
-- The ball in Box B depends on how many participants choose Box B.<br>
-- No Clue Balls are provided in this part.
+You are presented with Box A and Box B.<br>
+The computer places one ball in each box.<br>
+The ball in Box A has an unknown color, either <span class="yellow-bold">YELLOW</span> or <span class="blue-bold">BLUE</span>.
 </p>
 
-<div class="instructions-subheading">Belief and Decision Task</div>
-<ol>
-    <li><b>Guess Task:</b>
-        <p>
-            You will be asked:<br>
-            <i>“What is your best guess about the probability that the Ball in Box A is <span class="yellow-bold">YELLOW</span>?”</i><br><br>
-            You will enter a number between 0 and 100, where:
-            <ul>
-                <li>0 = completely sure it is <span class="blue-bold">BLUE</span></li>
-                <li>100 = completely sure it is <span class="yellow-bold">YELLOW</span></li>
-                <li>50 = equally likely to be <span class="yellow-bold">YELLOW</span> or <span class="blue-bold">BLUE</span></li>
-            </ul>
-        </p>
-    </li>
+<p><strong>New in Part 2:</strong> Before making your choice, you will receive a <strong>Recommendation Ball</strong> that recommends you to choose Box A or Box B.</p>
 
-    <li><b>Decision Task:</b>
-        <p>
-            After entering your guess, you will choose either Box A or Box B.
-        </p>
-    </li>
-</ol>
+<p>Each round, there are <strong>5 players</strong>, and the computer prepares <strong>5 private Recommendation Balls</strong> — one per person.
+The Recommendation on each ball depends on the color of the ball in Box A.</p>
 
-<div class="instructions-subheading">Earnings</div>
-<p>
-If you choose <b>Box A</b>:
+<hr>
+
+<div class="instructions-subheading">How the Recommendation Ball is Generated</div>
+
+<p><strong>If the Ball in Box A is <span class="yellow-bold">YELLOW</span>:</strong></p>
 <ul>
-    <li><span class="yellow-bold">YELLOW</span> → You earn 3 ECU</li>
-    <li><span class="blue-bold">BLUE</span> → You earn 1 ECU</li>
+    <li>All 5 of you receive Recommendation Balls labeled "A"</li>
 </ul>
 
-If you choose <b>Box B</b>:
+<p><strong>If the Ball in Box A is <span class="blue-bold">BLUE</span>:</strong></p>
+<ul>
+    <li>3 of you receive Recommendation Balls labeled "A"</li>
+    <li>2 of you receive Recommendation Balls labeled "B"</li>
+</ul>
+
+<p>Each participant is randomly given <strong>one</strong> of these Recommendation Balls and sees <strong>only their own</strong>.</p>
+
+<hr>
+
+<div class="instructions-subheading">Decision Task</div>
+
+<p>Each round in Part 2 will proceed in the following order:</p>
+
+<p><strong>1. You Receive Your Recommendation Ball</strong></p>
+<p>The computer will draw a Recommendation Ball for you.<br>
+You will see only your own Recommendation Ball (either A or B).</p>
+
+<p><strong>2. You will choose either Box A or Box B</strong></p>
+
+<hr>
+
+<div class="instructions-subheading">Earnings</div>
+
+<p><strong>If you choose Box A:</strong></p>
+<ul>
+    <li><span class="yellow-bold">YELLOW</span> → You earn 30 ECU</li>
+    <li><span class="blue-bold">BLUE</span> → You earn 10 ECU</li>
+</ul>
+
+<p><strong>If you choose Box B:</strong></p>
 <ul>
     <li>The earnings depend on how many others also chose Box B.</li>
 </ul>
 
 <table class="example-table">
-    <tr>
-        <th>Number of People Choosing Box B (Including You)</th>
-        <th>Earning from Box B (ECU)</th>
-    </tr>
-    <tr><td>0</td><td>3</td></tr>
-    <tr><td>1</td><td>2.5</td></tr>
-    <tr><td>2</td><td>2</td></tr>
-    <tr><td>3</td><td>1.5</td></tr>
-    <tr><td>4</td><td>1</td></tr>
-    <tr><td>5</td><td>0.5</td></tr>
+    <thead>
+        <tr>
+            <th>Number of People Choosing Box B (Including You)</th>
+            <th>Earning from Box B (ECU)</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr><td>1</td><td>25</td></tr>
+        <tr><td>2</td><td>20</td></tr>
+        <tr><td>3</td><td>15</td></tr>
+        <tr><td>4</td><td>10</td></tr>
+        <tr><td>5</td><td>5</td></tr>
+    </tbody>
 </table>
-</p>
+
+<hr>
 
 <div class="instructions-subheading">What You See After Each Round</div>
-<p>
-After each round, you will see:
+<p>After each round, you will see:</p>
 <ul>
     <li>The color of the Ball in Box A</li>
     <li>How many people chose Box B</li>
     <li>Your earnings for the round</li>
 </ul>
-</p>
 
-{{ endif }}
+{% elif treatment == 'BT' %}
+<h2>Part 2</h2>
 
-{{ if treatment == 'BI' }}
+<p>All decisions will be made using the computer.<br>
+Please read the instructions below carefully, as they explain the task and how your earnings will be determined.</p>
 
-<div class="instructions-subheading">On Your Screen</div>
-<p>
-- You are presented with Box A and Box B.<br>
-- The computer places one ball in each box.<br>
-- The ball in Box A has an unknown color, either <span class="yellow-bold">YELLOW</span> or <span class="blue-bold">BLUE</span>.<br>
-- You will receive a <b>Clue Ball</b> drawn from a hidden Clue Box.<br>
-- The color of your Clue Ball depends on the true color of the Ball in Box A.
-</p>
-
-<div class="instructions-subheading">How the Clue Ball Is Determined</div>
-<p>
-- If the Ball in Box A is <span class="yellow-bold">YELLOW</span>, the Clue Box only contains <span class="yellow-text">"yellow"</span> balls.<br>
-- If the Ball in Box A is <span class="blue-bold">BLUE</span>, the Clue Box contains 2 <span class="blue-text">"blue"</span> balls and 1 <span class="yellow-text">"yellow"</span> ball.<br>
-- Each group member draws a Clue Ball independently.
-</p>
-
-<div class="instructions-subheading">Belief and Decision Task</div>
-<ol>
-    <li><b>Guess Task:</b>
-        <p>
-            You will be asked:<br>
-            <i>“What is your best guess about the probability that the Ball in Box A is <span class="yellow-bold">YELLOW</span>?”</i><br><br>
-            You will enter a number between 0 and 100, where:
-            <ul>
-                <li>0 = completely sure it is <span class="blue-bold">BLUE</span></li>
-                <li>100 = completely sure it is <span class="yellow-bold">YELLOW</span></li>
-                <li>50 = equally likely to be <span class="yellow-bold">YELLOW</span> or <span class="blue-bold">BLUE</span></li>
-            </ul>
-        </p>
-    </li>
-
-    <li><b>Decision Task:</b>
-        <p>
-            After entering your guess, you will choose either Box A or Box B.
-        </p>
-    </li>
-</ol>
-
-<div class="instructions-subheading">Earnings</div>
-<p>
-If you choose <b>Box A</b>:
-<ul>
-    <li><span class="yellow-bold">YELLOW</span> → You earn 3 ECU</li>
-    <li><span class="blue-bold">BLUE</span> → You earn 1 ECU</li>
-</ul>
-
-If you choose <b>Box B</b>:
-<ul>
-    <li>The earnings depend on how many others also chose Box B.</li>
-</ul>
-
-<table class="example-table">
-    <tr>
-        <th>Number of People Choosing Box B (Including You)</th>
-        <th>Earning from Box B (ECU)</th>
-    </tr>
-   <tr><td>0</td><td>3</td></tr>
-    <tr><td>1</td><td>2.5</td></tr>
-    <tr><td>2</td><td>2</td></tr>
-    <tr><td>3</td><td>1.5</td></tr>
-    <tr><td>4</td><td>1</td></tr>
-    <tr><td>5</td><td>0.5</td></tr>
-</table>
-</p>
-
-<div class="instructions-subheading">What You See After Each Round</div>
-<p>
-After each round, you will see:
-<ul>
-    <li>The color of the Ball in Box A</li>
-    <li>How many people chose Box B</li>
-    <li>Your earnings for the round</li>
-</ul>
-</p>
-
-{{ endif }}
-
-{{ if treatment == 'BT' }}
+<hr>
 
 <div class="instructions-subheading">On Your Screen</div>
 <p>
-- You are presented with Box A and Box B.<br>
-- The computer places one ball in each box.<br>
-- The ball in Box A has an unknown color, either <span class="yellow-bold">YELLOW</span> or <span class="blue-bold">BLUE</span>.<br>
-- The ball in Box B depends on how many participants choose Box B.<br>
-- An earnings adjustment (tax) applies to Box B.
+You are presented with Box A and Box B.<br>
+The computer places one ball in each box.<br>
+The ball in Box A has an unknown color, either <span class="yellow-bold">YELLOW</span> or <span class="blue-bold">BLUE</span>.<br>
+The ball in Box B depends on how many participants choose Box B.<br>
+An earnings adjustment (tax) applies to Box B.
 </p>
+
+<hr>
 
 <div class="instructions-subheading">How the Ball in Box A Is Determined</div>
-<p>
-Before each round:
+<p>Before each round:</p>
 <ul>
     <li>The computer randomly selects the color of the Ball in Box A (50/50 chance).</li>
     <li>The color is the same for everyone in your group.</li>
     <li>You will not see the color before making your choice.</li>
 </ul>
-</p>
 
-<div class="instructions-subheading">Belief and Decision Task</div>
-<ol>
-    <li><b>Guess Task:</b>
-        <p>
-            You will be asked your belief about the color of the Ball in Box A.
-        </p>
-    </li>
+<hr>
 
-    <li><b>Decision Task:</b>
-        <p>
-            Choose either Box A or Box B after submitting your belief.
-        </p>
-    </li>
-</ol>
+<div class="instructions-subheading">Decision Task</div>
+<p>You will choose either Box A or Box B.</p>
+
+<hr>
 
 <div class="instructions-subheading">Earnings</div>
-<p>
-If you choose <b>Box A</b>:
+
+<p><strong>If you choose Box A:</strong></p>
 <ul>
-    <li><span class="yellow-bold">YELLOW</span> → You earn 3 ECU</li>
-    <li><span class="blue-bold">BLUE</span> → You earn 1 ECU</li>
+    <li><span class="yellow-bold">YELLOW</span> → You earn 30 ECU</li>
+    <li><span class="blue-bold">BLUE</span> → You earn 10 ECU</li>
 </ul>
 
-If you choose <b>Box B</b>:
+<p><strong>If you choose Box B:</strong></p>
 <ul>
     <li>The earnings depend on the number choosing Box B, after a tax adjustment.</li>
 </ul>
 
 <table class="example-table">
-    <tr>
-        <th>Number of People Choosing Box B (Including You)</th>
-        <th>Earning from Box B (ECU)</th>
-    </tr>
-    <tr><td>0</td><td>2.5</td></tr>
-    <tr><td>1</td><td>2</td></tr>
-    <tr><td>2</td><td>1.5</td></tr>
-    <tr><td>3</td><td>1</td></tr>
-    <tr><td>4</td><td>0.5</td></tr>
-    <tr><td>5</td><td>0</td></tr>
+    <thead>
+        <tr>
+            <th>Number of People Choosing Box B (Including You)</th>
+            <th>Earning from Box B (ECU)</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr><td>1</td><td>20</td></tr>
+        <tr><td>2</td><td>15</td></tr>
+        <tr><td>3</td><td>10</td></tr>
+        <tr><td>4</td><td>5</td></tr>
+        <tr><td>5</td><td>0</td></tr>
+    </tbody>
 </table>
-</p>
+
+<hr>
 
 <div class="instructions-subheading">What You See After Each Round</div>
-<p>
-After each round, you will see:
+<p>After each round, you will see:</p>
 <ul>
     <li>The color of the Ball in Box A</li>
     <li>How many people chose Box B</li>
     <li>Your earnings for the round</li>
 </ul>
-</p>
 
-{{ endif }}
+{% endif %}
 
 <div class="next-button">{{ next_button }}</div>
+
 </div>
 {{ endblock }}

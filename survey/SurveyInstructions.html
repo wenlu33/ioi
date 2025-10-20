@@ -1,11 +1,9 @@
-{{block styles}}
+{{ block style }}
 <link rel="stylesheet" type="text/css" href="{{ static 'global/global_styles.css' }}"/>
-{{endblock}}
+{{ endblock }}
 
 {{ block title }}
-<div class="narrow-body">
-    Post-Task Survey
-</div>
+<div class="narrow-body">Post-Task Survey</div>
 {{ endblock }}
 
 {{ block content }}
@@ -16,16 +14,16 @@
 
     <p>
         To show our appreciation for your time and effort in completing this survey,
-        <b>you will receive an additional ${{participation_fee}}</b> if you complete the survey carefully and seriously.
+        <b>you will receive an additional ${{ participation_fee }}</b> if you complete the survey carefully and seriously.
     </p>
-     <p>
+
+    <p>
         Please take your time and answer the questions thoughtfully.
     </p>
 
     <p>
         When you are ready, click "Next" to begin the survey.
     </p>
-
 
     <div class="next-button">{{ next_button }}</div>
 </div>

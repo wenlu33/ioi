@@ -1,0 +1,77 @@
+
+
+{{ block style }}
+<link rel="stylesheet" type="text/css" href="{{ static 'global/global_styles.css' }}"/>
+{{ endblock }}
+
+{{ block title }}
+<div class="narrow-body">Game Results</div>
+{{ endblock }}
+
+{{ block content }}
+<div class="narrow-body">
+
+    <h1 style="font-size: 42px; font-weight: normal; margin-bottom: 20px; text-align: center;">Decision Tasks Complete!</h1>
+    <p style="font-size: 20px; color: #666; margin-bottom: 60px; text-align: center;">Here are your earnings from the game.</p>
+
+    <div style="background-color: #f8f9fa; border: 3px solid #333; padding: 40px; margin-bottom: 40px; border-radius: 10px;">
+        <h2 style="font-size: 28px; font-weight: bold; margin-bottom: 30px; color: #333; text-align: center;">Your Game Earnings</h2>
+
+        <div style="background-color: white; padding: 25px; margin-bottom: 25px; border-radius: 5px; border: 2px solid #dee2e6;">
+            <p style="font-size: 18px; margin-bottom: 10px; color: #666; text-align: center;">Randomly Selected Round:</p>
+            <p style="font-size: 48px; font-weight: bold; margin: 10px 0; color: #333; text-align: center;">
+                Part {{ part }}, Round {{ round_in_part }}
+            </p>
+            <p style="font-size: 16px; color: #999; text-align: center;">(Overall Round {{ payment_round }} of 20)</p>
+        </div>
+
+        <div style="background-color: white; padding: 25px; margin-bottom: 25px; border-radius: 5px; border: 2px solid #dee2e6; text-align: left;">
+            <h3 style="font-size: 20px; font-weight: bold; margin-bottom: 15px;">What happened in this round:</h3>
+            <table style="width: 100%; font-size: 18px;">
+                {% if recommendation %}
+                <tr>
+                    <td style="padding: 10px 0;">Your recommendation was:</td>
+                    <td style="padding: 10px 0; text-align: right; font-weight: bold;">Box {{ recommendation }}</td>
+                </tr>
+                {% endif %}
+                <tr>
+                    <td style="padding: 10px 0;">You chose:</td>
+                    <td style="padding: 10px 0; text-align: right; font-weight: bold;">Box {{ choice }}</td>
+                </tr>
+                <tr>
+                    <td style="padding: 10px 0;">Ball in Box A was:</td>
+                    <td style="padding: 10px 0; text-align: right; font-weight: bold; color: {% if box_a_color == 'YELLOW' %}#FFD700{% else %}#4169E1{% endif %};">
+                        {{ box_a_color }}
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding: 10px 0;">Number who chose Box B:</td>
+                    <td style="padding: 10px 0; text-align: right; font-weight: bold;">{{ num_chose_b }} people</td>
+                </tr>
+            </table>
+        </div>
+
+        <div style="background-color: white; padding: 25px; margin-bottom: 25px; border-radius: 5px; border: 2px solid #dee2e6;">
+            <table style="width: 100%; font-size: 20px;">
+                <tr>
+                    <td style="padding: 15px 0;">
+                        Earnings from Selected Round:<br>
+                        <span style="font-size: 16px; color: #666;">{{ round_earnings_ecu }} ECU × ${{ exchange_rate }} per ECU</span>
+                    </td>
+                    <td style="padding: 15px 0; text-align: right; font-size: 32px; font-weight: bold; color: #28a745;">
+                        ${{ round_earnings_dollars }}
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <div style="background-color: #e3f2fd; border-left: 4px solid #2196F3; padding: 20px 30px; margin-bottom: 20px; text-align: left;">
+            <p style="font-size: 18px; margin: 0;">
+                <strong>Next:</strong> Please complete a short survey on the next page.
+            </p>
+        </div>
+    </div>
+
+    <div class="next-button">{{ next_button }}</div>
+</div>
+{{ endblock }}
