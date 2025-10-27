@@ -133,24 +133,21 @@ class ResultsPage(Page):
 # ----------------- Functions -----------------
 
 def set_group_results(group: Group):
-    """Calculate Box B results after all players chose"""
     players = group.get_players()
-
-    # Count how many chose Box B
     num_box_b = sum(1 for p in players if p.choice == 'B')
     group.num_chose_box_b = num_box_b
 
-    # Determine box size
     if num_box_b > 2:
         group.box_b_size = 'Small'
     else:
         group.box_b_size = 'Large'
 
-    # Set Box B earnings based on table
-    # ✅ Fixed payoff table (was missing 0 players case)
-    payoff_table = { 1: 25, 2: 20, 3: 15, 4: 10, 5: 5}
+    # Check this table!
+    payoff_table = {1: 25, 2: 20, 3: 15, 4: 10, 5: 5}
     group.box_b_earnings = payoff_table.get(num_box_b, 0)
 
+    # ✅ Add debug here:
+    print(f"DEBUG set_group_results: num_box_b={num_box_b}, box_b_earnings={group.box_b_earnings}")
 
 # ----------------- Page Sequence -----------------
 

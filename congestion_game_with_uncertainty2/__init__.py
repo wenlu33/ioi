@@ -146,19 +146,7 @@ class ResultsPage(Page):
 
     @staticmethod
     def before_next_page(player: Player, timeout_happened):
-        # # ✅ SET THE PAYOFF (important!)
-        # group = player.group
-        #
-        # if player.choice == 'A':
-        #     if group.box_a_color == 'YELLOW':
-        #         player.payoff = 30
-        #     else:
-        #         player.payoff = 10
-        # else:
-        #     player.payoff = group.box_b_earnings
-
-        # Store Part 1 data for later payment calculation
-        key = f'part1_round_{player.round_number}'
+        key = f'part2_round_{player.round_number}'
         player.participant.vars[key] = {
             'choice': player.choice,
             'box_a_color': player.group.box_a_color,
@@ -177,14 +165,14 @@ class FinalPayment(Page):
         import random
 
         # Get exchange rate from settings
-        exchange_rate = player.session.config.get('exchange_rate', 0.5)  # ✅ Added default
+        exchange_rate = player.session.config.get('exchange_rate', 0.5)
 
         # Total rounds: 10 from Part 1 + 10 from Part 2 = 20 rounds
-        total_rounds = 20
+        total_rounds = 20  # ✅ Changed from 6 to 20
         payment_round = random.randint(1, total_rounds)
 
         # Determine which part and get the player data
-        if payment_round <= 10:
+        if payment_round <= 10:  # ✅ Changed from 3 to 10
             # Payment from Part 1 (rounds 1-10)
             part = 1
             round_in_part = payment_round
@@ -198,22 +186,21 @@ class FinalPayment(Page):
                 box_a_color = part1_data['box_a_color']
                 num_chose_b = part1_data['num_chose_b']
                 box_b_earnings = part1_data['box_b_earnings']
-                recommendation = None  # No recommendation in Part 1
+                recommendation = None
             else:
-                # ⚠️ WARNING: Part 1 data not found - this shouldn't happen
-                # Fallback: use Part 2 Round 1
+                # Fallback if Part 1 data not found
                 payment_round_player = player.in_round(1)
                 choice = payment_round_player.choice
                 box_a_color = payment_round_player.group.box_a_color
                 num_chose_b = payment_round_player.group.num_chose_box_b
                 box_b_earnings = payment_round_player.group.box_b_earnings
-                recommendation = payment_round_player.recommendation
+                recommendation = None
                 part = 2
                 round_in_part = 1
         else:
             # Payment from Part 2 (rounds 11-20)
             part = 2
-            round_in_part = payment_round - 10
+            round_in_part = payment_round - 10  # ✅ Changed from 3 to 10
             payment_round_player = player.in_round(round_in_part)
 
             choice = payment_round_player.choice
@@ -234,12 +221,21 @@ class FinalPayment(Page):
         # Convert ECU to dollars
         round_earnings_dollars = round_earnings_ecu * exchange_rate
 
-        participation_fee = 3
-        total_payment = participation_fee + round_earnings_dollars
+        # # Calculate total payment (game + $3 survey)
+        # participation_fee = 3
+        # total_payment = round_earnings_dollars + participation_fee
+        #
+        # # ✅ Store TOTAL payment - ONLY TIME WE SET THIS
+        # player.participant.payoff = total_payment
 
-        # Save final payment
-        player.participant.payoff = total_payment
+        # ❌ REMOVE THESE:
+        # participation_fee = 3
+        # total_payment = round_earnings_dollars + participation_fee
+        # player.participant.payoff = total_payment
 
+        # ✅ REPLACE WITH:
+        player.participant.payoff = round_earnings_dollars
+        # Return data to display (removed participation_fee and total_payment)
         return dict(
             payment_round=payment_round,
             part=part,
@@ -247,8 +243,6 @@ class FinalPayment(Page):
             round_earnings_ecu=round_earnings_ecu,
             round_earnings_dollars=round_earnings_dollars,
             exchange_rate=exchange_rate,
-            participation_fee=participation_fee,
-            total_payment=total_payment,
             box_a_color=box_a_color,
             choice=choice,
             num_chose_b=num_chose_b,
@@ -335,24 +329,21 @@ class FinalPayment(Page):
 # ----------------- Functions -----------------
 
 def set_group_results(group: Group):
-    """Calculate Box B results after all players chose"""
     players = group.get_players()
-
-    # Count how many chose Box B
     num_box_b = sum(1 for p in players if p.choice == 'B')
     group.num_chose_box_b = num_box_b
 
-    # Determine box size
     if num_box_b > 2:
         group.box_b_size = 'Small'
     else:
         group.box_b_size = 'Large'
 
-    # Set Box B earnings based on table
+    # Check this table!
     payoff_table = {1: 25, 2: 20, 3: 15, 4: 10, 5: 5}
     group.box_b_earnings = payoff_table.get(num_box_b, 0)
 
-
+    # ✅ Add debug here:
+    print(f"DEBUG set_group_results: num_box_b={num_box_b}, box_b_earnings={group.box_b_earnings}")
 # ----------------- Page Sequence -----------------
 
 page_sequence = [
