@@ -109,16 +109,16 @@ class ResultsPage(Page):
 
     @staticmethod
     def before_next_page(player: Player, timeout_happened):
-        # ✅ SET THE PAYOFF (important!)
-        group = player.group
-
-        if player.choice == 'A':
-            if group.box_a_color == 'YELLOW':
-                player.payoff = 30
-            else:
-                player.payoff = 10
-        else:
-            player.payoff = group.box_b_earnings
+        # # ✅ SET THE PAYOFF (important!)
+        # group = player.group
+        #
+        # if player.choice == 'A':
+        #     if group.box_a_color == 'YELLOW':
+        #         player.payoff = 30
+        #     else:
+        #         player.payoff = 10
+        # else:
+        #     player.payoff = group.box_b_earnings
 
         # Store Part 1 data for later payment calculation
         key = f'part1_round_{player.round_number}'
@@ -148,7 +148,7 @@ def set_group_results(group: Group):
 
     # Set Box B earnings based on table
     # ✅ Fixed payoff table (was missing 0 players case)
-    payoff_table = {0: 30, 1: 25, 2: 20, 3: 15, 4: 10, 5: 5}
+    payoff_table = { 1: 25, 2: 20, 3: 15, 4: 10, 5: 5}
     group.box_b_earnings = payoff_table.get(num_box_b, 0)
 
 

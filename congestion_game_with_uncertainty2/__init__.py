@@ -146,115 +146,27 @@ class ResultsPage(Page):
 
     @staticmethod
     def before_next_page(player: Player, timeout_happened):
-        # ✅ SET THE PAYOFF (important!)
-        group = player.group
+        # # ✅ SET THE PAYOFF (important!)
+        # group = player.group
+        #
+        # if player.choice == 'A':
+        #     if group.box_a_color == 'YELLOW':
+        #         player.payoff = 30
+        #     else:
+        #         player.payoff = 10
+        # else:
+        #     player.payoff = group.box_b_earnings
 
-        if player.choice == 'A':
-            if group.box_a_color == 'YELLOW':
-                player.payoff = 30
-            else:
-                player.payoff = 10
-        else:
-            player.payoff = group.box_b_earnings
-
-        # ✅ Store Part 2 data for final payment calculation
-        key = f'part2_round_{player.round_number}'
+        # Store Part 1 data for later payment calculation
+        key = f'part1_round_{player.round_number}'
         player.participant.vars[key] = {
             'choice': player.choice,
-            'box_a_color': group.box_a_color,
-            'num_chose_b': group.num_chose_box_b,
-            'box_b_earnings': group.box_b_earnings,
-            'recommendation': player.recommendation
+            'box_a_color': player.group.box_a_color,
+            'num_chose_b': player.group.num_chose_box_b,
+            'box_b_earnings': player.group.box_b_earnings
         }
 
 
-# class FinalPayment(Page):
-#     @staticmethod
-#     def is_displayed(player: Player):
-#         return player.round_number == C.NUM_ROUNDS
-#
-#     @staticmethod
-#     def vars_for_template(player: Player):
-#         import random
-#
-#         # Get exchange rate from settings
-#         exchange_rate = player.session.config.get('exchange_rate', 0.5)  # ✅ Added default
-#
-#         # Total rounds: 10 from Part 1 + 10 from Part 2 = 20 rounds
-#         total_rounds = 20
-#         payment_round = random.randint(1, total_rounds)
-#
-#         # Determine which part and get the player data
-#         if payment_round <= 10:
-#             # Payment from Part 1 (rounds 1-10)
-#             part = 1
-#             round_in_part = payment_round
-#
-#             # Retrieve stored Part 1 data
-#             part1_data_key = f'part1_round_{round_in_part}'
-#
-#             if part1_data_key in player.participant.vars:
-#                 part1_data = player.participant.vars[part1_data_key]
-#                 choice = part1_data['choice']
-#                 box_a_color = part1_data['box_a_color']
-#                 num_chose_b = part1_data['num_chose_b']
-#                 box_b_earnings = part1_data['box_b_earnings']
-#                 recommendation = None  # No recommendation in Part 1
-#             else:
-#                 # ⚠️ WARNING: Part 1 data not found - this shouldn't happen
-#                 # Fallback: use Part 2 Round 1
-#                 payment_round_player = player.in_round(1)
-#                 choice = payment_round_player.choice
-#                 box_a_color = payment_round_player.group.box_a_color
-#                 num_chose_b = payment_round_player.group.num_chose_box_b
-#                 box_b_earnings = payment_round_player.group.box_b_earnings
-#                 recommendation = payment_round_player.recommendation
-#                 part = 2
-#                 round_in_part = 1
-#         else:
-#             # Payment from Part 2 (rounds 11-20)
-#             part = 2
-#             round_in_part = payment_round - 10
-#             payment_round_player = player.in_round(round_in_part)
-#
-#             choice = payment_round_player.choice
-#             box_a_color = payment_round_player.group.box_a_color
-#             num_chose_b = payment_round_player.group.num_chose_box_b
-#             box_b_earnings = payment_round_player.group.box_b_earnings
-#             recommendation = payment_round_player.recommendation
-#
-#         # Calculate earnings IN ECU
-#         if choice == 'A':
-#             if box_a_color == 'YELLOW':
-#                 round_earnings_ecu = 30
-#             else:
-#                 round_earnings_ecu = 10
-#         else:
-#             round_earnings_ecu = box_b_earnings
-#
-#         # Convert ECU to dollars
-#         round_earnings_dollars = round_earnings_ecu * exchange_rate
-#
-#         participation_fee = 3
-#         total_payment = participation_fee + round_earnings_dollars
-#
-#         # Save final payment
-#         player.participant.payoff = total_payment
-#
-#         return dict(
-#             payment_round=payment_round,
-#             part=part,
-#             round_in_part=round_in_part,
-#             round_earnings_ecu=round_earnings_ecu,
-#             round_earnings_dollars=round_earnings_dollars,
-#             exchange_rate=exchange_rate,
-#             participation_fee=participation_fee,
-#             total_payment=total_payment,
-#             box_a_color=box_a_color,
-#             choice=choice,
-#             num_chose_b=num_chose_b,
-#             recommendation=recommendation
-#         )
 class FinalPayment(Page):
     @staticmethod
     def is_displayed(player: Player):
@@ -265,7 +177,7 @@ class FinalPayment(Page):
         import random
 
         # Get exchange rate from settings
-        exchange_rate = player.session.config.get('exchange_rate', 0.5)
+        exchange_rate = player.session.config.get('exchange_rate', 0.5)  # ✅ Added default
 
         # Total rounds: 10 from Part 1 + 10 from Part 2 = 20 rounds
         total_rounds = 20
@@ -273,8 +185,11 @@ class FinalPayment(Page):
 
         # Determine which part and get the player data
         if payment_round <= 10:
+            # Payment from Part 1 (rounds 1-10)
             part = 1
             round_in_part = payment_round
+
+            # Retrieve stored Part 1 data
             part1_data_key = f'part1_round_{round_in_part}'
 
             if part1_data_key in player.participant.vars:
@@ -283,8 +198,10 @@ class FinalPayment(Page):
                 box_a_color = part1_data['box_a_color']
                 num_chose_b = part1_data['num_chose_b']
                 box_b_earnings = part1_data['box_b_earnings']
-                recommendation = None
+                recommendation = None  # No recommendation in Part 1
             else:
+                # ⚠️ WARNING: Part 1 data not found - this shouldn't happen
+                # Fallback: use Part 2 Round 1
                 payment_round_player = player.in_round(1)
                 choice = payment_round_player.choice
                 box_a_color = payment_round_player.group.box_a_color
@@ -294,9 +211,11 @@ class FinalPayment(Page):
                 part = 2
                 round_in_part = 1
         else:
+            # Payment from Part 2 (rounds 11-20)
             part = 2
             round_in_part = payment_round - 10
             payment_round_player = player.in_round(round_in_part)
+
             choice = payment_round_player.choice
             box_a_color = payment_round_player.group.box_a_color
             num_chose_b = payment_round_player.group.num_chose_box_b
@@ -315,8 +234,11 @@ class FinalPayment(Page):
         # Convert ECU to dollars
         round_earnings_dollars = round_earnings_ecu * exchange_rate
 
-        # ✅ Store game earnings in participant.payoff (survey will add participation fee)
-        player.participant.payoff = round_earnings_dollars
+        participation_fee = 3
+        total_payment = participation_fee + round_earnings_dollars
+
+        # Save final payment
+        player.participant.payoff = total_payment
 
         return dict(
             payment_round=payment_round,
@@ -325,11 +247,90 @@ class FinalPayment(Page):
             round_earnings_ecu=round_earnings_ecu,
             round_earnings_dollars=round_earnings_dollars,
             exchange_rate=exchange_rate,
+            participation_fee=participation_fee,
+            total_payment=total_payment,
             box_a_color=box_a_color,
             choice=choice,
             num_chose_b=num_chose_b,
             recommendation=recommendation
         )
+# class FinalPayment(Page):
+#     @staticmethod
+#     def is_displayed(player: Player):
+#         return player.round_number == C.NUM_ROUNDS
+#
+#     @staticmethod
+#     def vars_for_template(player: Player):
+#         import random
+#
+#         # Get exchange rate from settings
+#         exchange_rate = player.session.config.get('exchange_rate', 0.5)
+#
+#         # Total rounds: 10 from Part 1 + 10 from Part 2 = 20 rounds
+#         total_rounds = 6
+#         payment_round = random.randint(1, total_rounds)
+#
+#         # Determine which part and get the player data
+#         if payment_round <= 3:
+#             part = 1
+#             round_in_part = payment_round
+#             part1_data_key = f'part1_round_{round_in_part}'
+#
+#             if part1_data_key in player.participant.vars:
+#                 part1_data = player.participant.vars[part1_data_key]
+#
+#                 choice = part1_data['choice']
+#                 box_a_color = part1_data['box_a_color']
+#                 num_chose_b = part1_data['num_chose_b']
+#                 box_b_earnings = part1_data['box_b_earnings']
+#                 recommendation = None
+#             else:
+#                 payment_round_player = player.in_round(1)
+#                 choice = payment_round_player.choice
+#                 box_a_color = payment_round_player.group.box_a_color
+#                 num_chose_b = payment_round_player.group.num_chose_box_b
+#                 box_b_earnings = payment_round_player.group.box_b_earnings
+#                 recommendation = payment_round_player.recommendation
+#                 part = 2
+#                 round_in_part = 1
+#         else:
+#             part = 2
+#             round_in_part = payment_round - 3
+#             payment_round_player = player.in_round(round_in_part)
+#             choice = payment_round_player.choice
+#             box_a_color = payment_round_player.group.box_a_color
+#             num_chose_b = payment_round_player.group.num_chose_box_b
+#             box_b_earnings = payment_round_player.group.box_b_earnings
+#             recommendation = payment_round_player.recommendation
+#
+#         # Calculate earnings IN ECU
+#         if choice == 'A':
+#             if box_a_color == 'YELLOW':
+#                 round_earnings_ecu = 30
+#             else:
+#                 round_earnings_ecu = 10
+#         else:
+#
+#             round_earnings_ecu = box_b_earnings
+#
+#         # Convert ECU to dollars
+#         round_earnings_dollars = round_earnings_ecu * exchange_rate
+#
+#         # ✅ Store game earnings in participant.payoff (survey will add participation fee)
+#         player.participant.payoff = round_earnings_dollars
+#
+#         return dict(
+#             payment_round=payment_round,
+#             part=part,
+#             round_in_part=round_in_part,
+#             round_earnings_ecu=round_earnings_ecu,
+#             round_earnings_dollars=round_earnings_dollars,
+#             exchange_rate=exchange_rate,
+#             box_a_color=box_a_color,
+#             choice=choice,
+#             num_chose_b=num_chose_b,
+#             recommendation=recommendation
+#         )
 
 # ----------------- Functions -----------------
 
@@ -348,7 +349,7 @@ def set_group_results(group: Group):
         group.box_b_size = 'Large'
 
     # Set Box B earnings based on table
-    payoff_table = {0: 30, 1: 25, 2: 20, 3: 15, 4: 10, 5: 5}
+    payoff_table = {1: 25, 2: 20, 3: 15, 4: 10, 5: 5}
     group.box_b_earnings = payoff_table.get(num_box_b, 0)
 
 

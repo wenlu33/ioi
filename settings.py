@@ -40,7 +40,7 @@ SESSION_CONFIGS = [
 SESSION_CONFIG_DEFAULTS = dict(
     num_demo_participants=5,
     exchange_rate=0.5,  # ← Changed to 0.5 (1 ECU = $0.50)
-    real_world_currency_per_point=0.5,  # ← Also 0.5
+    real_world_currency_per_point=1,
     participation_fee=3.00,
     doc=""
 )

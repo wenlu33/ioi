@@ -142,24 +142,43 @@ class Survey(Page):
         player.time_survey = pagetime.last(player.participant)
 
 
+# class EndScreen(Page):
+#
+#     @staticmethod
+#     def vars_for_template(player):
+#         # Game earnings (already stored in participant.payoff from FinalPayment)
+#         game_earnings = player.participant.payoff
+#
+#         # Participation fee for completing survey
+#         participation_fee = player.session.config.get('participation_fee', 3)
+#
+#         # Total earnings
+#         total_earnings = game_earnings + participation_fee
+#
+#         return dict(
+#             payoff=format(game_earnings, '.2f'),
+#             participation_fee=format(participation_fee, '.2f'),
+#             total_earnings=format(total_earnings, '.2f'),
+#         )
 class EndScreen(Page):
-
     @staticmethod
     def vars_for_template(player):
-        # Game earnings (already stored in participant.payoff from FinalPayment)
-        game_earnings = player.participant.payoff
+        # Get game earnings from stored value
+        game_earnings = player.participant.vars.get('final_game_earnings', 0)
 
-        # Participation fee for completing survey
+        # Participation fee
         participation_fee = player.session.config.get('participation_fee', 3)
 
-        # Total earnings
+        # Total
         total_earnings = game_earnings + participation_fee
+
+        # ✅ NOW set participant.payoff (after survey is done, one at a time)
+        player.participant.payoff = total_earnings
 
         return dict(
             payoff=format(game_earnings, '.2f'),
             participation_fee=format(participation_fee, '.2f'),
             total_earnings=format(total_earnings, '.2f'),
         )
-
 
 page_sequence = [SurveyInstructions, Survey, EndScreen]
