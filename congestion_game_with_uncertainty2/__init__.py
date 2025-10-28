@@ -41,15 +41,23 @@ class Player(BasePlayer):
 
 # ----------------- Pages -----------------
 
-class InstructionsWaitPage(WaitPage):
-    """Experimenter control: Wait after reading Part 2 instructions"""
-    title_text = "Please wait"
-    body_text = "You have finished reading the Part 2 instructions. Please wait for the experimenter to begin Part 2."
+# class InstructionsWaitPage(WaitPage):
+#     """Experimenter control: Wait after reading Part 2 instructions"""
+#     title_text = "Please wait"
+#     body_text = "You have finished reading the Part 2 instructions. Please wait for the experimenter to begin Part 2."
+#
+#     @staticmethod
+#     def is_displayed(player: Player):
+#         return player.round_number == 1
+
+
+class FormingGroupsWait(WaitPage):
+    title_text = "Forming Groups"
+    body_text = "Please wait while we form new groups for this round..."
 
     @staticmethod
-    def is_displayed(player: Player):
-        return player.round_number == 1
-
+    def is_displayed(player):
+        return player.round_number > 1  # Show for rounds 2-10 (not round 1)
 
 class BallDrawPage(Page):
     """Shows animation of ball being drawn"""
@@ -347,7 +355,8 @@ def set_group_results(group: Group):
 # ----------------- Page Sequence -----------------
 
 page_sequence = [
-    InstructionsWaitPage,  # Round 1 only - experimenter control
+    # InstructionsWaitPage,  # Round 1 only - experimenter control
+FormingGroupsWait,
     BallDrawPage,  # Show ball being drawn
     RecommendationWaitPage,  # Generate ball color + recommendations
     RecommendationPage,  # Show YOUR recommendation ball

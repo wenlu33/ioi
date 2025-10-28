@@ -1,0 +1,21 @@
+{{ block style }}
+<link rel="stylesheet" type="text/css" href="{{ static 'global/global_styles.css' }}"/>
+{{ endblock }}
+
+{{ block title }}
+<div class="narrow-body">Part 1</div>
+{{ endblock }}
+
+{{ block content }}
+<div class="narrow-body">
+    
+    <div style="max-width: 600px; margin: 40px auto; padding: 30px; border-radius: 5px;">
+
+        <p style="font-size: 20px; margin-top: 20px;">
+            <strong>Part 1</strong> will now begin. Please read the instructions carefully on the next page.
+        </p>
+    </div>
+    
+    <div class="next-button">{{ next_button }}</div>
+</div>
+{{ endblock }}

@@ -108,42 +108,49 @@ Please read the instructions below carefully, as they explain the task and how y
 <hr>
 
 <div class="instructions-subheading">On Your Screen</div>
-<p>
-You are presented with Box A and Box B.<br>
-The computer places one ball in each box.<br>
-The ball in Box A has an unknown color, either <span class="yellow-bold">YELLOW</span> or <span class="blue-bold">BLUE</span>.<br>
-The ball in Box B depends on how many participants choose Box B.<br>
-An earnings adjustment (tax) applies to Box B.
-</p>
-
-<hr>
-
-<div class="instructions-subheading">How the Ball in Box A Is Determined</div>
-<p>Before each round:</p>
 <ul>
-    <li>The computer randomly selects the color of the Ball in Box A (50/50 chance).</li>
-    <li>The color is the same for everyone in your group.</li>
-    <li>You will not see the color before making your choice.</li>
+    <li>You are presented with <b>Box A</b> and <b>Box B</b>.</li>
+    <li>The computer places one ball in each box.</li>
+    <li>The ball in <b>Box A</b> has an unknown color, either <span class="yellow-bold">YELLOW</span> or <span class="blue-bold">BLUE</span>.</li>
+    <li>The ball in <b>Box B</b> has an unknown size, from
+    <span style="font-size: 1.5em;">large</span>
+    to
+    <span style="font-size: 0.75em;">small</span>, depends on how many participants choose Box B.</li>
+<!--    <li>No Clue Balls are provided in this part.</li>-->
 </ul>
 
 <hr>
 
 <div class="instructions-subheading">Decision Task</div>
-<p>You will choose either Box A or Box B.</p>
+<ol>
+<!--    <li><b>Guess Task:</b>-->
+<!--        <p>You will be asked:</p>-->
+<!--        <blockquote><i>“What is your best guess about the probability that the Ball in Box A is <span class="yellow-bold">YELLOW</span>?”</i></blockquote>-->
+
+<!--        <p>You will enter a number between 0 and 100:</p>-->
+<!--        <ul>-->
+<!--            <li><b>0</b> = completely sure it is <span class="blue-bold">BLUE</span></li>-->
+<!--            <li><b>100</b> = completely sure it is <span class="yellow-bold">YELLOW</span></li>-->
+<!--            <li><b>50</b> = equally likely to be <span class="yellow-bold">YELLOW</span> or <span class="blue-bold">BLUE</span></li>-->
+<!--        </ul>-->
+<!--    </li>-->
+
+        <p>You will choose either <b>Box A</b> or <b>Box B</b>.</p>
+</ol>
 
 <hr>
 
 <div class="instructions-subheading">Earnings</div>
 
-<p><strong>If you choose Box A:</strong></p>
+<p><b>If you choose Box A:</b></p>
 <ul>
     <li><span class="yellow-bold">YELLOW</span> → You earn 30 ECU</li>
     <li><span class="blue-bold">BLUE</span> → You earn 10 ECU</li>
 </ul>
-
-<p><strong>If you choose Box B:</strong></p>
+<p><strong>New in Part 2:</strong>
+<p><b>If you choose Box B:</b></p>
 <ul>
-    <li>The earnings depend on the number choosing Box B, after a tax adjustment.</li>
+    <li>The earnings depend on how many others also chose Box B.</li>
 </ul>
 
 <table class="example-table">
@@ -165,14 +172,11 @@ An earnings adjustment (tax) applies to Box B.
 <hr>
 
 <div class="instructions-subheading">What You See After Each Round</div>
-<p>After each round, you will see:</p>
 <ul>
     <li>The color of the Ball in Box A</li>
     <li>How many people chose Box B</li>
     <li>Your earnings for the round</li>
 </ul>
-
-{% endif %}
 
 <div class="next-button">{{ next_button }}</div>
 

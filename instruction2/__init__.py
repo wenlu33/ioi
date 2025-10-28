@@ -81,6 +81,11 @@ class Player(BasePlayer):
     time_examples_wait = models.IntegerField()
 
 # Pages
+class Part2Intro(Page):
+    @staticmethod
+    def is_displayed(player):
+        return True
+
 @pagetime.track
 class Decisions(Page):
     # ❌ REMOVE THIS ENTIRE METHOD:
@@ -161,4 +166,12 @@ class ComprehensionCheck(Page):
         player.time_comprehension = pagetime.last(player.participant)
 
 
-page_sequence = [Decisions, ExamplesWaitPage, ComprehensionCheck]
+class WaitToStart(WaitPage):
+    title_text = "Please wait"
+    body_text = "Please wait for all participants to complete the comprehension check. Part 2 will begin shortly."
+
+    @staticmethod
+    def is_displayed(player):
+        return True  # Always show
+
+page_sequence = [Part2Intro, Decisions, ExamplesWaitPage, ComprehensionCheck, WaitToStart]

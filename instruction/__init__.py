@@ -148,6 +148,11 @@ class Welcome(Page):
     def before_next_page(player, timeout_happened):
         player.time_welcome = pagetime.last(player.participant)
 
+class Part1Intro(Page):
+    @staticmethod
+    def is_displayed(player):
+        return True
+
 @pagetime.track
 class Decisions(Page):
 
@@ -225,10 +230,18 @@ class ExamplesWaitPage(Page):
         player.time_examples_wait = pagetime.last(player.participant)
 
 
+class WaitToStart(WaitPage):
+    title_text = "Please wait"
+    body_text = "Please wait for all participants to complete the comprehension check. The experiment will begin shortly."
+
+    @staticmethod
+    def is_displayed(player):
+        return True  # Always show
+
 @pagetime.track
 class Results(Page):
 
     @staticmethod
     def before_next_page(player, timeout_happened):
         player.participant.time_results = int(time.time())
-page_sequence = [Consent, Welcome, Decisions, Examples, ExamplesWaitPage, ComprehensionCheck]
+page_sequence = [Consent, Welcome, Part1Intro, Decisions, Examples, ExamplesWaitPage, ComprehensionCheck, WaitToStart]
