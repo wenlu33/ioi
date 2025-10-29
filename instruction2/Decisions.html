@@ -99,7 +99,9 @@ You will see only your own Recommendation Ball (either A or B).</p>
     <li>Your earnings for the round</li>
 </ul>
 
-{% elif treatment == 'BT' %}
+    {% endif %}
+
+{% if treatment == 'BT' %}
 <h2>Part 2</h2>
 
 <p>All decisions will be made using the computer.<br>
@@ -177,6 +179,9 @@ Please read the instructions below carefully, as they explain the task and how y
     <li>How many people chose Box B</li>
     <li>Your earnings for the round</li>
 </ul>
+
+
+    {% endif %}
 
 <div class="next-button">{{ next_button }}</div>
 

@@ -9,7 +9,7 @@ Part 2: With Recommendation Ball System
 class C(BaseConstants):
     NAME_IN_URL = 'congestion_game_with_uncertainty2'
     PLAYERS_PER_GROUP = 5
-    NUM_ROUNDS = 10
+    NUM_ROUNDS = 3
 
 
 class Subsession(BaseSubsession):
@@ -176,11 +176,11 @@ class FinalPayment(Page):
         exchange_rate = player.session.config.get('exchange_rate', 0.5)
 
         # Total rounds: 10 from Part 1 + 10 from Part 2 = 20 rounds
-        total_rounds = 20  # ✅ Changed from 6 to 20
+        total_rounds = 6  # ✅ Changed from 6 to 20
         payment_round = random.randint(1, total_rounds)
 
         # Determine which part and get the player data
-        if payment_round <= 10:  # ✅ Changed from 3 to 10
+        if payment_round <= 3:  # ✅ Changed from 3 to 10
             # Payment from Part 1 (rounds 1-10)
             part = 1
             round_in_part = payment_round
@@ -208,7 +208,7 @@ class FinalPayment(Page):
         else:
             # Payment from Part 2 (rounds 11-20)
             part = 2
-            round_in_part = payment_round - 10  # ✅ Changed from 3 to 10
+            round_in_part = payment_round - 3  # ✅ Changed from 3 to 10
             payment_round_player = player.in_round(round_in_part)
 
             choice = payment_round_player.choice
