@@ -154,6 +154,16 @@ class ResultsPage(Page):
 
     @staticmethod
     def before_next_page(player: Player, timeout_happened):
+        # ADD THESE 3 LINES HERE ↓↓↓
+        group = player.group
+        if player.choice == 'A':
+            player.payoff = 30 if group.box_a_color == 'YELLOW' else 10
+        else:
+            player.payoff = group.box_b_earnings
+        # ↑↑↑ END OF 3 LINES new change
+
+
+
         key = f'part2_round_{player.round_number}'
         player.participant.vars[key] = {
             'choice': player.choice,

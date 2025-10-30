@@ -127,8 +127,16 @@ class ResultsPage(Page):
         #         player.payoff = 10
         # else:
         #     player.payoff = group.box_b_earnings
+        # ADD THESE 3 LINES HERE ↓↓↓
+        group = player.group
+        if player.choice == 'A':
+            player.payoff = 30 if group.box_a_color == 'YELLOW' else 10
+        else:
+            player.payoff = group.box_b_earnings
+        # ↑↑↑ END OF 3 LINES new change
 
         # Store Part 1 data for later payment calculation
+
         key = f'part1_round_{player.round_number}'
         player.participant.vars[key] = {
             'choice': player.choice,
