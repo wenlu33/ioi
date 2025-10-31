@@ -44,6 +44,8 @@ class Player(BasePlayer):
 
 # ----------------- Pages -----------------
 
+
+
 # class InstructionsWaitPage(WaitPage):
 #     """Experimenter control: Wait after reading Part 2 instructions"""
 #     title_text = "Please wait"
