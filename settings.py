@@ -12,12 +12,12 @@ STATICFILES_DIRS = [
 # Other settings...
 
 SESSION_CONFIGS = [
-    dict(
-        name='IOI_BB',
-        display_name='IOI - Treatment BB',
-        app_sequence=['instruction', 'congestion_game_with_uncertainty', 'instruction2', 'congestion_game_with_uncertainty2', 'survey'],
-        treatment='BB',
-    ),
+    # dict(
+    #     name='IOI_BB',
+    #     display_name='IOI - Treatment BB',
+    #     app_sequence=['instruction', 'congestion_game_with_uncertainty', 'instruction2', 'congestion_game_with_uncertainty2', 'survey'],
+    #     treatment='BB',
+    # ),
     dict(
         name='IOI_BI',
         display_name='IOI - Treatment BI',
