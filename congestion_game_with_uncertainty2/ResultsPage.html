@@ -5,6 +5,9 @@
     <ul>
         <li>The color of the ball in Box A was: <span class="{% if box_a_color == 'YELLOW' %}yellow-bold{% else %}blue-bold{% endif %}">{{ box_a_color }}</span></li>
         <li>{{ num_box_b }} players in your group chose Box B.</li>
+    {% if player.participant.treatment == 'BI' %}
+    <li>Your Recommendation Ball: <b>Box {{ recommendation }}</b></li>
+    {% endif %}
         <li>Your Choice: Box {{ choice }}</li>
         <li>Your Earnings This Round: <b>{{ round_earnings }}</b> ECUs</li>
     </ul>
