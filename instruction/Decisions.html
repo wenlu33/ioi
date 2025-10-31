@@ -3,9 +3,7 @@
 {{ endblock }}
 
 {{ block title }}
-<div class="narrow-body">
-Your Decision
-</div>
+<div class="narrow-body">Your Decision</div>
 {{ endblock }}
 
 {{ block content }}
@@ -19,48 +17,33 @@ Please read the instructions below carefully, as they explain the task and how y
 <hr>
 
 <div class="instructions-subheading">On Your Screen</div>
-<ul>
-    <li>You are presented with <b>Box A</b> and <b>Box B</b>.</li>
-    <li>The computer places one ball in each box.</li>
-    <li>The ball in <b>Box A</b> has an unknown color, either <span class="yellow-bold">YELLOW</span> or <span class="blue-bold">BLUE</span>.</li>
-    <li>The ball in <b>Box B</b> has an unknown size, from
-    <span style="font-size: 1.5em;">large</span>
-    to
-    <span style="font-size: 0.75em;">small</span>, depends on how many participants choose Box B.</li>
-<!--    <li>No Clue Balls are provided in this part.</li>-->
-</ul>
+<p>
+You are presented with Box A and Box B.<br>
+The computer places one ball in each box.<br>
+The ball in Box A has an unknown color, either <span class="yellow-bold">YELLOW</span> or <span class="blue-bold">BLUE</span>.<br>
+The ball in Box B has an unknown size, which may be
+<span style="font-size: 1.5em;">large</span>
+or
+<span style="font-size: 0.75em;">small</span>, depending on how many participants choose Box B.
+</p>
 
 <hr>
 
 <div class="instructions-subheading">Decision Task</div>
-<ol>
-<!--    <li><b>Guess Task:</b>-->
-<!--        <p>You will be asked:</p>-->
-<!--        <blockquote><i>“What is your best guess about the probability that the Ball in Box A is <span class="yellow-bold">YELLOW</span>?”</i></blockquote>-->
-
-<!--        <p>You will enter a number between 0 and 100:</p>-->
-<!--        <ul>-->
-<!--            <li><b>0</b> = completely sure it is <span class="blue-bold">BLUE</span></li>-->
-<!--            <li><b>100</b> = completely sure it is <span class="yellow-bold">YELLOW</span></li>-->
-<!--            <li><b>50</b> = equally likely to be <span class="yellow-bold">YELLOW</span> or <span class="blue-bold">BLUE</span></li>-->
-<!--        </ul>-->
-<!--    </li>-->
-
-        <p>You will choose either <b>Box A</b> or <b>Box B</b>.</p>
-</ol>
+<p>You will choose either <b>Box A</b> or <b>Box B</b>.</p>
 
 <hr>
 
 <div class="instructions-subheading">Earnings</div>
 
 <p><b>If you choose Box A:</b></p>
-<ul>
+<ul style="margin: 10px 0;">
     <li><span class="yellow-bold">YELLOW</span> → You earn 30 ECU</li>
     <li><span class="blue-bold">BLUE</span> → You earn 10 ECU</li>
 </ul>
 
-<p><b>If you choose Box B:</b></p>
-<ul>
+<p style="margin-top: 15px;"><b>If you choose Box B:</b></p>
+<ul style="margin: 10px 0 15px 0;">
     <li>The earnings depend on how many others also chose Box B.</li>
 </ul>
 
@@ -72,17 +55,18 @@ Please read the instructions below carefully, as they explain the task and how y
         </tr>
     </thead>
     <tbody>
-        <tr><td>1</td><td>25</td></tr>
-        <tr><td>2</td><td>20</td></tr>
-        <tr><td>3</td><td>15</td></tr>
-        <tr><td>4</td><td>10</td></tr>
-        <tr><td>5</td><td>5</td></tr>
+        <tr><td>1</td><td style="font-weight: bold;">25</td></tr>
+        <tr><td>2</td><td style="font-weight: bold;">20</td></tr>
+        <tr><td>3</td><td style="font-weight: bold;">15</td></tr>
+        <tr><td>4</td><td style="font-weight: bold;">10</td></tr>
+        <tr><td>5</td><td style="font-weight: bold;">5</td></tr>
     </tbody>
 </table>
 
 <hr>
 
 <div class="instructions-subheading">What You See After Each Round</div>
+<p>After each round, you will see:</p>
 <ul>
     <li>The color of the Ball in Box A</li>
     <li>How many people chose Box B</li>

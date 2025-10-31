@@ -22,6 +22,9 @@ def creating_session(subsession):
         subsession.group_randomly()
 
     # ✅ Removed: group.num_chose_box_b = 0 (initial=0 in model handles this)
+    # ✅ ADD THIS: Initialize recommendation to empty string for everyone
+    for player in subsession.get_players():
+        player.recommendation = ''
 
 
 class Group(BaseGroup):
@@ -32,7 +35,7 @@ class Group(BaseGroup):
 
 
 class Player(BasePlayer):
-    recommendation = models.StringField()  # A or B
+    recommendation = models.StringField(blank=True,  initial='')  # A or B
     choice = models.StringField(
         choices=[['A', 'Choose Box A'], ['B', 'Choose Box B']],
         widget=widgets.RadioSelect
@@ -59,13 +62,30 @@ class FormingGroupsWait(WaitPage):
     def is_displayed(player):
         return player.round_number > 1  # Show for rounds 2-10 (not round 1)
 
-class BallDrawPage(Page):
-    """Shows animation of ball being drawn"""
+# class BallDrawPage(Page):
+#     """Shows animation of ball being drawn"""
+#
+#     @staticmethod
+#     def vars_for_template(player: Player):
+#         return dict()
+class GenerateBallWaitPage(WaitPage):
+    """
+    ✅ INVISIBLE: Generates ball color for BOTH BI and BT
+    This runs before BallDrawPage so the ball is ready
+    """
 
     @staticmethod
-    def vars_for_template(player: Player):
-        return dict()
+    def after_all_players_arrive(group: Group):
+        # Generate ball color for everyone
+        group.box_a_color = random.choice(['YELLOW', 'BLUE'])
 
+class BallDrawPage(Page):
+    # timeout_seconds = 10  # ✅ Add this
+    @staticmethod
+    def vars_for_template(player: Player):
+        return dict(
+            box_a_color=player.group.box_a_color
+        )
 
 class RecommendationWaitPage(WaitPage):
     """
@@ -76,9 +96,14 @@ class RecommendationWaitPage(WaitPage):
     body_text = "Please wait while the computer prepares your recommendation ball."
 
     @staticmethod
+    def is_displayed(player: Player):
+        # ✅ Only show this page to BI treatment
+        return player.participant.treatment == 'BI'
+
+    @staticmethod
     def after_all_players_arrive(group: Group):
-        # 🎯 First: Randomly determine Box A color (BEFORE recommendations)
-        group.box_a_color = random.choice(['YELLOW', 'BLUE'])
+        # # 🎯 First: Randomly determine Box A color (BEFORE recommendations)
+        # group.box_a_color = random.choice(['YELLOW', 'BLUE'])
 
         # Then: Generate recommendations based on color
         if group.box_a_color == 'YELLOW':
@@ -99,12 +124,16 @@ class RecommendationPage(Page):
     """Shows the player their recommendation ball"""
 
     @staticmethod
+    def is_displayed(player: Player):
+        # ✅ Only show this page to BI treatment
+        return player.participant.treatment == 'BI'
+
+    @staticmethod
     def vars_for_template(player: Player):
         return dict(
             recommendation=player.recommendation,
             round_number=player.round_number
         )
-
 
 class Choice(Page):
     form_model = 'player'
@@ -113,7 +142,7 @@ class Choice(Page):
     @staticmethod
     def vars_for_template(player: Player):
         return dict(
-            recommendation=player.recommendation,
+            recommendation=player.recommendation if player.recommendation else '',
             round_number=player.round_number
         )
 
@@ -144,12 +173,12 @@ class ResultsPage(Page):
 
         return dict(
             round_number=player.round_number,
-            recommendation=player.recommendation,
+            recommendation=player.recommendation if player.recommendation else '',
             choice=player.choice,
             box_a_color=group.box_a_color,
             box_b_size=group.box_b_size,
             num_box_b=group.num_chose_box_b,
-            round_earnings=earning
+            round_earnings=int(earning)
         )
 
     @staticmethod
@@ -169,7 +198,9 @@ class ResultsPage(Page):
             'choice': player.choice,
             'box_a_color': player.group.box_a_color,
             'num_chose_b': player.group.num_chose_box_b,
-            'box_b_earnings': player.group.box_b_earnings
+            'box_b_earnings': player.group.box_b_earnings,
+            'recommendation': player.recommendation if player.recommendation else '',  # ✅ Add this!
+            'round_payoff': player.payoff  # ✅ Also save payoff
         }
 
 
@@ -185,9 +216,19 @@ class FinalPayment(Page):
         # Get exchange rate from settings
         exchange_rate = player.session.config.get('exchange_rate', 0.5)
 
-        # Total rounds: 10 from Part 1 + 10 from Part 2 = 20 rounds
-        total_rounds = 6  # ✅ Changed from 6 to 20
-        payment_round = random.randint(1, total_rounds)
+        # # Total rounds: 10 from Part 1 + 10 from Part 2 = 20 rounds
+        # total_rounds = 6  # ✅ Changed from 6 to 20
+        # payment_round = random.randint(1, total_rounds)
+        if 'payment_round' not in player.participant.vars:
+            # First time seeing this page - select random round
+            total_rounds = 6  # Part 1 (3 rounds) + Part 2 (3 rounds)
+            payment_round = random.randint(1, total_rounds)
+
+            # ✅ SAVE IT so it doesn't change on refresh
+            player.participant.vars['payment_round'] = payment_round
+        else:
+            # Already selected - use the saved one
+            payment_round = player.participant.vars['payment_round']
 
         # Determine which part and get the player data
         if payment_round <= 3:  # ✅ Changed from 3 to 10
@@ -225,7 +266,8 @@ class FinalPayment(Page):
             box_a_color = payment_round_player.group.box_a_color
             num_chose_b = payment_round_player.group.num_chose_box_b
             box_b_earnings = payment_round_player.group.box_b_earnings
-            recommendation = payment_round_player.recommendation
+            recommendation = payment_round_player.recommendation if payment_round_player.recommendation else None  # ✅ Good!
+
 
         # Calculate earnings IN ECU
         if choice == 'A':
@@ -356,8 +398,14 @@ def set_group_results(group: Group):
     else:
         group.box_b_size = 'Large'
 
-    # Check this table!
-    payoff_table = {1: 25, 2: 20, 3: 15, 4: 10, 5: 5}
+    # Get treatment and set appropriate payoff table
+    treatment = players[0].participant.treatment
+
+    if treatment == 'BT':
+        payoff_table = {1: 20, 2: 15, 3: 10, 4: 5, 5: 0}
+    else:
+        payoff_table = {1: 25, 2: 20, 3: 15, 4: 10, 5: 5}
+
     group.box_b_earnings = payoff_table.get(num_box_b, 0)
 
     # ✅ Add debug here:
@@ -367,6 +415,7 @@ def set_group_results(group: Group):
 page_sequence = [
     # InstructionsWaitPage,  # Round 1 only - experimenter control
 FormingGroupsWait,
+GenerateBallWaitPage,
     BallDrawPage,  # Show ball being drawn
     RecommendationWaitPage,  # Generate ball color + recommendations
     RecommendationPage,  # Show YOUR recommendation ball

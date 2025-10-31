@@ -24,10 +24,19 @@ The computer places one ball in each box.<br>
 The ball in Box A has an unknown color, either <span class="yellow-bold">YELLOW</span> or <span class="blue-bold">BLUE</span>.
 </p>
 
-<p><strong>New in Part 2:</strong> Before making your choice, you will receive a <strong>Recommendation Ball</strong> that recommends you to choose Box A or Box B.</p>
+<div style="background-color: #f3e5f5; border-left: 4px solid #9c27b0; padding: 20px 25px; margin: 25px 0; border-radius: 6px;">
+    <h3 style="font-size: 20px; font-weight: bold; margin: 0 0 8px 0; color: #6a1b9a;">
+        New in Part 2
+    </h3>
+    <p style="font-size: 17px; margin: 0 0 8px 0; line-height: 1.5;">
+        Before making your choice, you will receive a <strong>Recommendation Ball</strong> that recommends Box A or Box B.
+    </p>
+    <p style="font-size: 15px; margin: 0; line-height: 1.5; color: #666;">
+        See details below on how recommendations are generated.
+    </p>
+</div>
 
-<p>Each round, there are <strong>5 players</strong>, and the computer prepares <strong>5 private Recommendation Balls</strong> — one per person.
-The Recommendation on each ball depends on the color of the ball in Box A.</p>
+<p>Each round, there are <strong>5 players</strong>, and the computer prepares <strong>5 private Recommendation Balls</strong> — one per person.</p>
 
 <hr>
 
@@ -63,13 +72,13 @@ You will see only your own Recommendation Ball (either A or B).</p>
 <div class="instructions-subheading">Earnings</div>
 
 <p><strong>If you choose Box A:</strong></p>
-<ul>
+<ul style="margin: 10px 0;">
     <li><span class="yellow-bold">YELLOW</span> → You earn 30 ECU</li>
     <li><span class="blue-bold">BLUE</span> → You earn 10 ECU</li>
 </ul>
 
-<p><strong>If you choose Box B:</strong></p>
-<ul>
+<p style="margin-top: 15px;"><strong>If you choose Box B:</strong></p>
+<ul style="margin: 10px 0 15px 0;">
     <li>The earnings depend on how many others also chose Box B.</li>
 </ul>
 
@@ -81,11 +90,11 @@ You will see only your own Recommendation Ball (either A or B).</p>
         </tr>
     </thead>
     <tbody>
-        <tr><td>1</td><td>25</td></tr>
-        <tr><td>2</td><td>20</td></tr>
-        <tr><td>3</td><td>15</td></tr>
-        <tr><td>4</td><td>10</td></tr>
-        <tr><td>5</td><td>5</td></tr>
+        <tr><td>1</td><td style="font-weight: bold;">25</td></tr>
+        <tr><td>2</td><td style="font-weight: bold;">20</td></tr>
+        <tr><td>3</td><td style="font-weight: bold;">15</td></tr>
+        <tr><td>4</td><td style="font-weight: bold;">10</td></tr>
+        <tr><td>5</td><td style="font-weight: bold;">5</td></tr>
     </tbody>
 </table>
 
@@ -99,7 +108,7 @@ You will see only your own Recommendation Ball (either A or B).</p>
     <li>Your earnings for the round</li>
 </ul>
 
-    {% endif %}
+{% endif %}
 
 {% if treatment == 'BT' %}
 <h2>Part 2</h2>
@@ -118,40 +127,34 @@ Please read the instructions below carefully, as they explain the task and how y
     <span style="font-size: 1.5em;">large</span>
     to
     <span style="font-size: 0.75em;">small</span>, depends on how many participants choose Box B.</li>
-<!--    <li>No Clue Balls are provided in this part.</li>-->
 </ul>
 
 <hr>
 
 <div class="instructions-subheading">Decision Task</div>
-<ol>
-<!--    <li><b>Guess Task:</b>-->
-<!--        <p>You will be asked:</p>-->
-<!--        <blockquote><i>“What is your best guess about the probability that the Ball in Box A is <span class="yellow-bold">YELLOW</span>?”</i></blockquote>-->
-
-<!--        <p>You will enter a number between 0 and 100:</p>-->
-<!--        <ul>-->
-<!--            <li><b>0</b> = completely sure it is <span class="blue-bold">BLUE</span></li>-->
-<!--            <li><b>100</b> = completely sure it is <span class="yellow-bold">YELLOW</span></li>-->
-<!--            <li><b>50</b> = equally likely to be <span class="yellow-bold">YELLOW</span> or <span class="blue-bold">BLUE</span></li>-->
-<!--        </ul>-->
-<!--    </li>-->
-
-        <p>You will choose either <b>Box A</b> or <b>Box B</b>.</p>
-</ol>
+<p>You will choose either <b>Box A</b> or <b>Box B</b>.</p>
 
 <hr>
 
 <div class="instructions-subheading">Earnings</div>
 
 <p><b>If you choose Box A:</b></p>
-<ul>
+<ul style="margin: 10px 0;">
     <li><span class="yellow-bold">YELLOW</span> → You earn 30 ECU</li>
     <li><span class="blue-bold">BLUE</span> → You earn 10 ECU</li>
 </ul>
-<p><strong>New in Part 2:</strong>
-<p><b>If you choose Box B:</b></p>
-<ul>
+
+<div style="background-color: #f3e5f5; border-left: 4px solid #9c27b0; padding: 20px 25px; margin: 25px 0; border-radius: 6px;">
+    <h3 style="font-size: 20px; font-weight: bold; margin: 0 0 8px 0; color: #6a1b9a;">
+        New in Part 2
+    </h3>
+    <p style="font-size: 17px; margin: 0; line-height: 1.5;">
+        The earnings from <strong>Box B have been reduced compared to Part 1</strong>. Please review the updated payoff table below.
+    </p>
+</div>
+
+<p style="margin-top: 15px;"><b>If you choose Box B:</b></p>
+<ul style="margin: 10px 0 15px 0;">
     <li>The earnings depend on how many others also chose Box B.</li>
 </ul>
 
@@ -163,11 +166,11 @@ Please read the instructions below carefully, as they explain the task and how y
         </tr>
     </thead>
     <tbody>
-        <tr><td>1</td><td>20</td></tr>
-        <tr><td>2</td><td>15</td></tr>
-        <tr><td>3</td><td>10</td></tr>
-        <tr><td>4</td><td>5</td></tr>
-        <tr><td>5</td><td>0</td></tr>
+        <tr><td>1</td><td style="font-weight: bold;">20</td></tr>
+        <tr><td>2</td><td style="font-weight: bold;">15</td></tr>
+        <tr><td>3</td><td style="font-weight: bold;">10</td></tr>
+        <tr><td>4</td><td style="font-weight: bold;">5</td></tr>
+        <tr><td>5</td><td style="font-weight: bold;">0</td></tr>
     </tbody>
 </table>
 
@@ -180,8 +183,7 @@ Please read the instructions below carefully, as they explain the task and how y
     <li>Your earnings for the round</li>
 </ul>
 
-
-    {% endif %}
+{% endif %}
 
 <div class="next-button">{{ next_button }}</div>
 

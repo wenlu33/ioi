@@ -39,9 +39,9 @@ def creating_session(subsession):
     if subsession.round_number > 1:
         subsession.group_randomly()
 
-    # Draw ball color BEFORE players see anything
-    for group in subsession.get_groups():
-        group.box_a_color = random.choice(['YELLOW', 'BLUE'])
+    # # Draw ball color BEFORE players see anything
+    # for group in subsession.get_groups():
+    #     group.box_a_color = random.choice(['YELLOW', 'BLUE'])
 
 class Group(BaseGroup):
     box_a_color = models.StringField()  # YELLOW or BLUE
@@ -66,16 +66,33 @@ class FormingGroupsWait(WaitPage):
     @staticmethod
     def is_displayed(player):
         return player.round_number > 1  # Show for rounds 2-10 (not round 1)
+#
+# class BallDrawPage(Page):
+#     """Shows animation of ball being drawn (already drawn, just not revealed)"""
+#
+#     @staticmethod
+#     def vars_for_template(player: Player):
+#         return dict(
+#             box_a_color=player.group.box_a_color  # Available if you want to show animation
+#         )
 
-class BallDrawPage(Page):
-    """Shows animation of ball being drawn (already drawn, just not revealed)"""
+class GenerateBallWaitPage(WaitPage):
+    """Invisible WaitPage that generates ball color"""
 
+    @staticmethod
+    def after_all_players_arrive(group: Group):
+        # ✅ Generate ball color here
+        group.box_a_color = random.choice(['YELLOW', 'BLUE'])
+
+
+class BallDrawPage(Page):  # ✅ Keep as regular Page!
+    """Shows animation of ball being drawn"""
+    # timeout_seconds = 10  # ✅ Add this
     @staticmethod
     def vars_for_template(player: Player):
         return dict(
-            box_a_color=player.group.box_a_color  # Available if you want to show animation
+            box_a_color=player.group.box_a_color
         )
-
 
 class Choice(Page):
     form_model = 'player'
@@ -112,7 +129,7 @@ class ResultsPage(Page):
             box_a_color=group.box_a_color,
             box_b_size=group.box_b_size,
             num_box_b=group.num_chose_box_b,
-            round_earnings=earning
+            round_earnings=int(earning)
         )
 
     @staticmethod
@@ -167,4 +184,4 @@ def set_group_results(group: Group):
 
 # ----------------- Page Sequence -----------------
 
-page_sequence = [FormingGroupsWait, BallDrawPage, Choice, ResultsWaitPage, ResultsPage]
+page_sequence = [FormingGroupsWait, GenerateBallWaitPage, BallDrawPage, Choice, ResultsWaitPage, ResultsPage]

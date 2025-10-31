@@ -48,11 +48,35 @@ Your Decision
                     <table style="border-collapse: collapse; font-size: 16px;">
                         <thead>
                             <tr style="background-color: #e9ecef;">
-                                <th style="padding: 12px 20px; border: 2px solid #333; text-align: center;"># Choosing B (n)</th>
+                                <th style="padding: 12px 20px; border: 2px solid #333; text-align: center;"># Choosing B</th>
                                 <th style="padding: 12px 20px; border: 2px solid #333; text-align: center;">Payoff</th>
                             </tr>
                         </thead>
                         <tbody>
+                            {% if player.participant.treatment == 'BT' %}
+                            <!-- BT Treatment: Reduced payoffs -->
+                            <tr>
+                                <td style="padding: 10px 20px; border: 2px solid #333; text-align: center;">1</td>
+                                <td style="padding: 10px 20px; border: 2px solid #333; text-align: center; font-weight: bold;">20</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 10px 20px; border: 2px solid #333; text-align: center;">2</td>
+                                <td style="padding: 10px 20px; border: 2px solid #333; text-align: center; font-weight: bold;">15</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 10px 20px; border: 2px solid #333; text-align: center;">3</td>
+                                <td style="padding: 10px 20px; border: 2px solid #333; text-align: center; font-weight: bold;">10</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 10px 20px; border: 2px solid #333; text-align: center;">4</td>
+                                <td style="padding: 10px 20px; border: 2px solid #333; text-align: center; font-weight: bold;">5</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 10px 20px; border: 2px solid #333; text-align: center;">5</td>
+                                <td style="padding: 10px 20px; border: 2px solid #333; text-align: center; font-weight: bold;">0</td>
+                            </tr>
+                            {% else %}
+                            <!-- BI Treatment: Normal payoffs -->
                             <tr>
                                 <td style="padding: 10px 20px; border: 2px solid #333; text-align: center;">1</td>
                                 <td style="padding: 10px 20px; border: 2px solid #333; text-align: center; font-weight: bold;">25</td>
@@ -73,6 +97,7 @@ Your Decision
                                 <td style="padding: 10px 20px; border: 2px solid #333; text-align: center;">5</td>
                                 <td style="padding: 10px 20px; border: 2px solid #333; text-align: center; font-weight: bold;">5</td>
                             </tr>
+                            {% endif %}
                         </tbody>
                     </table>
                 </div>
