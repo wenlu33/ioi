@@ -23,14 +23,14 @@ SESSION_CONFIGS = [
         display_name='IOI - Treatment BI',
         app_sequence=['instruction', 'congestion_game_with_uncertainty', 'instruction2', 'congestion_game_with_uncertainty2', 'survey'],
         treatment='BI',
-        use_browser_bots=True,
+        use_browser_bots=False,
     ),
     dict(
         name='IOI_BT',
         display_name='IOI - Treatment BT',
         app_sequence=['instruction', 'congestion_game_with_uncertainty', 'instruction2', 'congestion_game_with_uncertainty2', 'survey'],
         treatment='BT',
-        use_browser_bots=True,
+        use_browser_bots=False,
     ),
 ]
 

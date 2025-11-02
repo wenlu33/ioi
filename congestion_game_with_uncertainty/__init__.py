@@ -9,7 +9,7 @@ Game with Choose → Group Result
 class C(BaseConstants):
     NAME_IN_URL = 'congestion_game_with_uncertainty'
     PLAYERS_PER_GROUP = 5
-    NUM_ROUNDS = 3
+    NUM_ROUNDS = 10
 
 
 class Subsession(BaseSubsession):
