@@ -220,17 +220,17 @@ class FinalPayment(Page):
 
         # # Total rounds: 10 from Part 1 + 10 from Part 2 = 20 rounds
         # total_rounds = 6  # ✅ Changed from 6 to 20
-        # payment_round = random.randint(1, total_rounds)
-        if 'payment_round' not in player.participant.vars:
+        # # payment_round = random.randint(1, total_rounds)
+        # if 'payment_round' not in player.participant.vars:
             # First time seeing this page - select random round
-            total_rounds = 6  # Part 1 (3 rounds) + Part 2 (3 rounds)
-            payment_round = random.randint(1, total_rounds)
+        total_rounds = 20  # Part 1 (3 rounds) + Part 2 (3 rounds)
+        payment_round = random.randint(1, total_rounds)
 
             # ✅ SAVE IT so it doesn't change on refresh
-            player.participant.vars['payment_round'] = payment_round
-        else:
-            # Already selected - use the saved one
-            payment_round = player.participant.vars['payment_round']
+        player.participant.vars['random_number'] = payment_round
+        # else:
+            # # Already selected - use the saved one
+            # payment_round = player.participant.vars['payment_round']
 
         # Determine which part and get the player data
         if payment_round <= 10:  # ✅ Changed from 3 to 10
