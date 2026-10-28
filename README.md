@@ -43,6 +43,16 @@ The study compares how choices and total surplus change under the two policies. 
 
 The within-information recommendation assignment identifies the effect of recommendation content in the low-payoff state. The between-policy comparison uses six sessions, three per policy. These are distinct comparisons.
 
+## Software checks
+
+The original oTree bots are in each application's `tests.py`. The additional checks in `tests/test_game_logic.py` exercise the payoff tables, recommendation allocation, and payment-round stability without starting oTree:
+
+```bash
+python -m unittest discover -s tests -v
+```
+
+Those checks cover isolated logic. A full oTree session remains the appropriate check for page flow, forms, and group synchronization.
+
 ## Author
 
 Wen Lu, Economics PhD candidate, Georgia State University. For the paper, related research, and contact information, see [wenlu.site](https://www.wenlu.site).
