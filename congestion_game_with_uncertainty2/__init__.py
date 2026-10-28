@@ -223,11 +223,13 @@ class FinalPayment(Page):
         # # payment_round = random.randint(1, total_rounds)
         # if 'payment_round' not in player.participant.vars:
             # First time seeing this page - select random round
-        total_rounds = 20  # Part 1 (3 rounds) + Part 2 (3 rounds)
-        payment_round = random.randint(1, total_rounds)
-
-            # ✅ SAVE IT so it doesn't change on refresh
-        player.participant.vars['random_number'] = payment_round
+        total_rounds = 20  # Ten baseline rounds and ten treatment rounds.
+        payment_round = player.participant.vars.get('random_number')
+        if payment_round is None:
+            payment_round = random.randint(1, total_rounds)
+            player.participant.vars['random_number'] = payment_round
+        if type(payment_round) is not int or not 1 <= payment_round <= total_rounds:
+            raise ValueError('The saved payment round must be an integer from 1 to 20.')
         # else:
             # # Already selected - use the saved one
             # payment_round = player.participant.vars['payment_round']
@@ -249,15 +251,10 @@ class FinalPayment(Page):
                 box_b_earnings = part1_data['box_b_earnings']
                 recommendation = None
             else:
-                # Fallback if Part 1 data not found
-                payment_round_player = player.in_round(1)
-                choice = payment_round_player.choice
-                box_a_color = payment_round_player.group.box_a_color
-                num_chose_b = payment_round_player.group.num_chose_box_b
-                box_b_earnings = payment_round_player.group.box_b_earnings
-                recommendation = None
-                part = 2
-                round_in_part = 1
+                raise RuntimeError(
+                    f'Missing baseline record {part1_data_key}; '
+                    'the payment cannot be calculated from a different round.'
+                )
         else:
             # Payment from Part 2 (rounds 11-20)
             part = 2
